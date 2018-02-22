@@ -24,7 +24,7 @@ class Config {
      define('DIR', '/');
 
     /* Define Site Url Address */
-    define('SITE_URL', 'https://home.thedavar.net/');
+    define('SITE_URL', 'https://uap4demo.userapplepie.com/');
 
     /* Define Controller */
     define('DEFAULT_CONTROLLER', 'Home');
@@ -57,15 +57,15 @@ class Config {
     /**
      * Database name.
      */
-    define('DB_NAME', 'home_controller');
+    define('DB_NAME', 'db_name');
     /**
      * Database username.
      */
-    define('DB_USER', 'home_controller');
+    define('DB_USER', 'db_username');
     /**
      * Database password.
      */
-    define('DB_PASS', 'GDx61N46D2fDg8DA');
+    define('DB_PASS', 'db_password');
     /**
      * PREFIX to be used in database calls default is uap4_
      */
@@ -156,4 +156,4 @@ class Config {
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
-///////////////////////////////////////////////////
+/////////////////////////////////////////////////////
