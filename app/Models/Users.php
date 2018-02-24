@@ -141,6 +141,7 @@ class Users extends Models
       $data = $this->db->select("SELECT groupID FROM ".PREFIX."users_groups WHERE userID = :userID ORDER BY groupID ASC",
         array(':userID' => $where_id));
       //$groupID = $data[0]->groupID;
+	  $groupOutput = array();
       foreach($data as $row){
         // Use group ID to get the group name
         $data2 = $this->db->select("SELECT groupName, groupFontColor, groupFontWeight FROM ".PREFIX."groups WHERE groupID = :groupID",
@@ -247,6 +248,7 @@ class Users extends Models
           ug.userID ASC
       ",
         array(':userID' => $userID));
+	  $cu_groupID = array();
       foreach($current_user_groups as $user_group_data){
         $cu_groupID[] = $user_group_data->groupID;
       }
