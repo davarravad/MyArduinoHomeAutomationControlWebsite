@@ -475,8 +475,8 @@ INSERT INTO `uap4_routes` (`id`, `controller`, `method`, `url`, `arguments`, `en
 (3, 'Auth', 'token', 'token', NULL, 1),
 (4, 'Auth', 'resource', 'resource', NULL, 1),
 (5, 'Auth', 'authorize', 'authorize', NULL, 1),
-(6, 'Home', 'RelayControl', 'RelayControl', NULL, 1),
-(7, 'Home', 'GarageControl', 'GarageControl', NULL, 1),
+(6, 'Home', 'RelayControl', 'RelayControl', '(:any)/(:any)/(:any)', 1),
+(7, 'Home', 'GarageControl', 'GarageControl', '(:any)/(:any)/(:any)', 1),
 (8, 'Members', 'MAHSettings', 'MAHSettings', NULL, 1),
 (9, 'Members', 'MAHTempSensors', 'MAHTempSensors', NULL, 1),
 (10, 'Members', 'MAHLights', 'MAHLights', NULL, 1),
@@ -750,9 +750,6 @@ ALTER TABLE `uap4_hc_user_perm`
 --
 ALTER TABLE `oauth_users`
   MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
 --
 -- AUTO_INCREMENT for table `uap4_hc_garage`
@@ -783,5 +780,3 @@ ALTER TABLE `uap4_hc_temps`
 --
 ALTER TABLE `uap4_hc_user_perm`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
-COMMIT;
-
