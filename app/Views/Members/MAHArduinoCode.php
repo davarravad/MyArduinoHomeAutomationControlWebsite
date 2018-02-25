@@ -35,7 +35,7 @@ use Libs\Language, Libs\Form;
 										$codefile = highlight_file(ROOTDIR."assets/arduinocode/ahacb.ino", true);
 										$codefile = str_replace('<br />', '', $codefile);
 										$codefile = str_replace('char&nbsp;server[]&nbsp;=&nbsp;"***********"', 'char&nbsp;server[]&nbsp;=&nbsp;"'.$server_address.'"', $codefile);
-										$codefile = str_replace('int&nbsp;house_id&nbsp;=&nbsp;"***********"', 'String&nbsp;house_id&nbsp;=&nbsp;"'.$user_house_id.'"', $codefile);
+										$codefile = str_replace('int&nbsp;house_id&nbsp;=&nbsp;***********', 'String&nbsp;house_id&nbsp;=&nbsp;"'.$user_house_id.'"', $codefile);
 										$codefile = str_replace('String&nbsp;website_token&nbsp;=&nbsp;"***********"', 'String&nbsp;website_token&nbsp;=&nbsp;"'.$user_token.'"', $codefile);
 										$codefile = str_replace('&nbsp;', ' ', $codefile);
 										echo $codefile;
