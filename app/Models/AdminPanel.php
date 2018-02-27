@@ -4,7 +4,7 @@
  *
  * UserApplePie
  * @author David (DaVaR) Sargent <davar@userapplepie.com>
- * @version 4.0.0
+ * @version 4.0.1
  */
 
  namespace App\Models;
@@ -69,7 +69,7 @@ class AdminPanel extends Models {
           LastLogin,
           SignUp
         FROM
-          oauth_users
+          ".PREFIX."users
         ORDER BY
           $run_order
         $limit
@@ -83,7 +83,7 @@ class AdminPanel extends Models {
         SELECT
           u.*
         FROM
-          oauth_users u
+          ".PREFIX."users u
         WHERE
           u.userID = :userID
         ",
@@ -142,7 +142,7 @@ class AdminPanel extends Models {
         SELECT
           *
         FROM
-          oauth_users
+          ".PREFIX."users
         ");
     return count($data);
   }
@@ -349,7 +349,7 @@ class AdminPanel extends Models {
           *,
           DATE_FORMAT(LastLogin, '%m/%d/%Y')
         FROM
-          oauth_users
+          ".PREFIX."users
         WHERE
           LastLogin BETWEEN NOW() - INTERVAL :length DAY AND NOW()
         ORDER BY
@@ -361,7 +361,7 @@ class AdminPanel extends Models {
           *,
           DATE_FORMAT(SignUp, '%m/%d/%Y')
         FROM
-          oauth_users
+          ".PREFIX."users
         WHERE
           SignUp BETWEEN NOW() - INTERVAL :length DAY AND NOW()
         ORDER BY
@@ -380,7 +380,7 @@ class AdminPanel extends Models {
           username,
           email
         FROM
-          oauth_users
+          ".PREFIX."users
         WHERE
           privacy_massemail = 'true'
         ORDER BY
@@ -400,7 +400,7 @@ class AdminPanel extends Models {
 		if($count > 0){
       // Message was updated in database, now we send the to user an email notification.
       // Get from user's data
-      $data2 = $this->db->select("SELECT username FROM oauth_users WHERE userID = :userID",
+      $data2 = $this->db->select("SELECT username FROM ".PREFIX."users WHERE userID = :userID",
         array(':userID' => $from_userID));
       $from_username = $data2[0]->username;
       //EMAIL MESSAGE USING PHPMAILER
