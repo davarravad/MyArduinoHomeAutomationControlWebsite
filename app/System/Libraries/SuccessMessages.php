@@ -4,7 +4,7 @@
 *
 * UserApplePie
 * @author David (DaVaR) Sargent <davar@userapplepie.com>
-* @version 4.0.0
+* @version 4.2.1
 */
 
 namespace Libs;
@@ -26,7 +26,7 @@ class SuccessMessages
       // Get data from session then display it
   		$success_msg = $_SESSION['success_message'];
   		$display_msg = "
-        <div class='col-lg-12 col-md-12 col-sm-12'>
+        <div class='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
           <div class='alert alert-success alert-dismissible' role='alert'>
             <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
               <span aria-hidden='true'>&times;</span>
@@ -79,7 +79,7 @@ class SuccessMessages
       }
         // Not an array, display single error
       $display_msg = "
-        <div class=''>
+        <div class='col-lg-12 col-md-12 col-sm-12 col-xs-12'>
           <div class='alert alert-success alert-dismissible' role='alert'>
             <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
               <span aria-hidden='true'>&times;</span>

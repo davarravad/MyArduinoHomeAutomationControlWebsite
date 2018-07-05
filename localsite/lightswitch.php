@@ -4,29 +4,23 @@
 *
 *
 * @author David (DaVaR) Sargent <davar@userapplepie.com>
-* @version 1.0
+* @version 1.1
 */
 
-// Require the database file
+/* Let Browser Know This is a Text Output */
+header("Content-Type: text/plain");
+
+/* Require the database file */
 require_once('database.php');
 
-if(isset($_REQUEST['house_id'])){
-    $house_id = $_REQUEST['house_id'];
-
-    // Get current action from database for ALL Relays
-    $stmt = $pdo->prepare('SELECT house_token FROM uap4_hc_house WHERE house_id = :house_id LIMIT 1');
-    $stmt->execute(['house_id' => $house_id]);
-    $data = $stmt->fetch();
-
-    $db_house_token = $data["house_token"];
-}
-
+/* Get Data From URL Input */
 if(isset($_REQUEST['relayset'])){ $relayset = $_REQUEST['relayset']; }
 if(isset($_REQUEST['action'])){ $action = $_REQUEST['action']; }
 if(isset($_REQUEST['action_data'])){ $action_data = $_REQUEST['action_data']; }
 if(isset($_REQUEST['tkn'])){ $tkn = $_REQUEST['tkn']; }
 if(isset($_REQUEST['relay_id'])){ $relay_id_url = $_REQUEST['relay_id']; }
 
+/* Check to see if first relay set */
 if($relayset == "1"){
     $relayset_array = str_split($action_data);
     $i = 0;
@@ -47,6 +41,7 @@ if($relayset == "1"){
             update_relay($house_id, $relay_id, $action, $relay_action, $tkn, $db_house_token);
         }
     }
+/* Check to see if second relay set */
 }else if($relayset == "2"){
     $relayset_array = str_split($action_data);
     $i = 16;
@@ -67,6 +62,7 @@ if($relayset == "1"){
             update_relay($house_id, $relay_id, $action, $relay_action, $tkn, $db_house_token);
         }
     }
+/* Check to see if single relay */
 }else if($relayset == "single_light"){
     $relay_id = get_relay_id($house_id, $relay_id_url);
     if(isset($relay_id)){
@@ -91,6 +87,7 @@ if($relayset == "1"){
     echo "error";
 }
 
+/* Function that gets relay id based on house id and alexa name */
 function get_relay_id($house_id = null, $relay_alexa_name = null){
     $host = DB_HOST;
     $db   = DB_NAME;
@@ -117,8 +114,8 @@ function get_relay_id($house_id = null, $relay_alexa_name = null){
     return $relay_id;
 }
 
+/* Function that updates relay in database */
 function update_relay($house_id = null, $relay_id = null, $action = null, $action_data = null, $tkn = null, $db_house_token = null){
-
     $host = DB_HOST;
     $db   = DB_NAME;
     $user = DB_USER;
@@ -149,17 +146,30 @@ function update_relay($house_id = null, $relay_id = null, $action = null, $actio
     }
 
     if(isset($update_relay_action)){
-        // Check to make sure token is valid before updating database
+        /* Check to make sure token is valid before updating database */
         if($tkn == $db_house_token){
             if($action == "update_relay"){
-                // Check to see if Arduino needs to update anything
+                /* Check to see if Arduino needs to update anything */
                 if($website_last_updated == "Arduino"){}
                 else if($website_last_updated == "WebSite"){}
-                // Update the garage door sensor data (Open/Closed)
+                /* Update the garage door sensor data (Open/Closed) */
                 if(isset($action_data)){
-                    // Update Current Door Status in Database
+                    /* Get relay status before update */
+                    $stmt = $pdo->prepare('SELECT id, relay_action FROM uap4_hc_relays WHERE house_id = :house_id AND relay_server_name = :relay_server_name LIMIT 1');
+                    $stmt->execute(['house_id' => $house_id, 'relay_server_name' => $relay_id]);
+                    $data_rh = $stmt->fetch();
+                    $relay_id_hr = $data_rh["id"];
+                    $relay_action_hr = $data_rh["relay_action"];
+                    /* Update Current Relay Status in Database */
                     $sql = "UPDATE uap4_hc_relays SET relay_action = ?, last_updated_by = ? WHERE house_id = ? AND relay_server_name = ?";
                     $pdo->prepare($sql)->execute([$update_relay_action, "Arduino", $house_id, $relay_id]);
+                    /* Insert data to Relay History Database */
+                    if(isset($relay_id_hr)){
+                      if($update_relay_action != $relay_action_hr){
+                        $sql = "INSERT INTO uap4_hc_relays_history SET relay_id = ?, relay_data = ?";
+                        $pdo->prepare($sql)->execute([$relay_id_hr, $update_relay_action]);
+                      }
+                    }
                     echo "<UPDATED>";
                 }else{
                     echo "<ERROR485>";

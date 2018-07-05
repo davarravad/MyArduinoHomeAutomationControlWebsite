@@ -4,7 +4,7 @@
 *
 * UserApplePie
 * @author David (DaVaR) Sargent <davar@userapplepie.com>
-* @version 4.0.0
+* @version 4.2.1
 */
 
 namespace App\System;
@@ -98,9 +98,13 @@ class LoadSiteSettings {
          *****************/
         // Account needs email activation, false=no true=yes
         define("ACCOUNT_ACTIVATION", $this->model->getSettings('site_user_activation'));
-
-        // Account needs invite code, blank=no code=yes
-        define("SITE_INVITE_CODE", $this->model->getSettings('site_user_invite_code'));
+        /*****************
+         *                *
+         *     Theme      *
+         *                *
+         *****************/
+        // Get them from settings
+        define("SITE_THEME", $this->model->getSettings('site_theme'));
     }
 
 }

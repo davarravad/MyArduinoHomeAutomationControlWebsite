@@ -4,28 +4,21 @@
 *
 *
 * @author David (DaVaR) Sargent <davar@userapplepie.com>
-* @version 1.0
+* @version 1.1
 */
 
-// Require the database file
+/* Require the database file */
 require_once('database.php');
 
-if(isset($_REQUEST['house_id'])){
-    $house_id = $_REQUEST['house_id'];
-
-    // Get current action from database for ALL Relays
-    $stmt = $pdo->prepare('SELECT house_token FROM uap4_hc_house WHERE house_id = :house_id LIMIT 1');
-    $stmt->execute(['house_id' => $house_id]);
-    $data = $stmt->fetch();
-
-    $db_house_token = $data["house_token"];
-}else{
+/* Check for House ID */
+if(!isset($_REQUEST['house_id'])){
     $success = "false";
-    $error_data[success] = "false";
-    $error_data[error][code] = "9552";
-    $error_data[error][message] = "Error With House ID";
+    $error_data['success'] = "false";
+    $error_data['error']['code'] = "9552";
+    $error_data['error']['message'] = "Error With House ID";
 }
 
+/* Get Data From URL Input */
 if(isset($_REQUEST['relayset'])){ $relayset = $_REQUEST['relayset']; }
 if(isset($_REQUEST['action'])){ $action = $_REQUEST['action']; }
 if(isset($_REQUEST['action_data'])){ $action_data = $_REQUEST['action_data']; }
@@ -41,28 +34,28 @@ if($relayset == "single_light"){
             $relay_action = "LIGHT_ON";
         }else{
             $success = "false";
-            $error_data[success] = "false";
-            $error_data[error][code] = "2875";
-            $error_data[error][message] = "Light Action is Not Correct";
+            $error_data['success'] = "false";
+            $error_data['error']['code'] = "2875";
+            $error_data['error']['message'] = "Light Action is Not Correct";
         }
         if(isset($relay_action)){
             $update_results = update_relay($house_id, $relay_id, $action, $relay_action, $tkn, $db_house_token);
             if($update_results == "success"){
-                $success_data[success] = "true";
+                $success_data['success'] = "true";
                 $success = "true";
             }
         }
     }else{
         $success = "false";
-        $error_data[success] = "false";
-        $error_data[error][code] = "2891";
-        $error_data[error][message] = "Relay I D is Not Correct";
+        $error_data['success'] = "false";
+        $error_data['error']['code'] = "2891";
+        $error_data['error']['message'] = "Relay I D is Not Correct";
     }
 }else{
     $success = "false";
-    $error_data[success] = "false";
-    $error_data[error][code] = "2651";
-    $error_data[error][message] = "Relay Set is Not Correct";
+    $error_data['success'] = "false";
+    $error_data['error']['code'] = "2651";
+    $error_data['error']['message'] = "Relay Set is Not Correct";
 }
 
 if($success == "true"){ // Check for Success

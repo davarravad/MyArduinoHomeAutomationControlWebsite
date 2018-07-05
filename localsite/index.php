@@ -8,7 +8,7 @@
 * text format that the Arduino can read.
 *
 * @author David (DaVaR) Sargent <davar@userapplepie.com>
-* @version 1.0
+* @version 1.1
 */
 
 echo "
@@ -17,7 +17,8 @@ echo "
 <title>Arduino Smart Home Control Console - Local Site Index File</title>
 </head>
 <body>
-Arduino Smart Home Control Console - Local Site Index File<Br>
+<h3>Arduino Smart Home Control Console</h3><hr>
+Local Site Index File<br>
 Everything looks to be working.  Enjoy!
 </body>
 </html>

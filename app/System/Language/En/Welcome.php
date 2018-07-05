@@ -6,7 +6,7 @@
 *
 * UserApplePie
 * @author David (DaVaR) Sargent <davar@userapplepie.com>
-* @version 4.0.0
+* @version 4.2.1
 */
 
 return [
@@ -50,7 +50,6 @@ return [
 	'uap_error' => "Error",
 	'uap_pages_displaying' => "Displaying",
 	'uap_friends' => "Friends",
-	'user_not_logged_in' => "You must be logged in to view that page!",
 
 	// Lang Change Success Message
 	'lang_change_success' => "You have successfully change the site language.",

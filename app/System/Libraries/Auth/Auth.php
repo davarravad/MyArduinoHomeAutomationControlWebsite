@@ -5,7 +5,7 @@
  *
  * UserApplePie
  * @author David (DaVaR) Sargent <davar@userapplepie.com>
- * @version 4.0.0
+ * @version 4.2.1
  *
  * @author Jhobanny Morillo <geomorillo@yahoo.com>
  */
@@ -22,7 +22,6 @@ class Auth {
     public $successmsg;
     public $authorize;
     public $language;
-		public $server;
 
     public function __construct() {
 		/* initialise the language object */
@@ -109,7 +108,7 @@ class Auth {
                         return false;
                     } else {
                         // Username and password are correct
-                        if ($query[0]->email_verified == "0") {
+                        if ($query[0]->isactive == "0") {
                             // Account is not activated
                             $this->logActivity($username, "AUTH_LOGIN_FAIL", "Account inactive");
                             $this->errormsg[] = $this->language->get('login_account_inactive');
@@ -264,13 +263,13 @@ class Auth {
             // No record of this IP in attempts table already exists, create new
             $attempt_count = 1;
             $info = array("ip" => $ip, "count" => $attempt_count, "expiredate" => $attempt_expiredate);
-            $this->authorize->addIntoDB('uap4_attempts',$info);
+            $this->authorize->addIntoDB('attempts',$info);
         } else {
             // IP Already exists in attempts table, add 1 to current count
             $attempt_count = intval($query_attempt[0]->count) + 1;
             $info = array("count" => $attempt_count, "expiredate" => $attempt_expiredate);
             $where = array("ip" => $ip);
-            $this->authorize->updateInDB('uap4_attempts',$info, $where);
+            $this->authorize->updateInDB('attempts',$info, $where);
         }
     }
 
@@ -309,7 +308,7 @@ class Auth {
         $expiredate = $rememberMe ? date("Y-m-d H:i:s", strtotime(SESSION_DURATION_RM)) : date("Y-m-d H:i:s", strtotime(SESSION_DURATION));
         $expiretime = strtotime($expiredate);
         $info = array("uid" => $uid, "username" => $username, "hash" => $hash, "expiredate" => $expiredate, "ip" => $ip);
-        $this->authorize->addIntoDB("uap4_sessions", $info);
+        $this->authorize->addIntoDB("sessions", $info);
         Cookie::set(SESSION_PREFIX.'auth_session', $hash, $expiretime, "/", FALSE);
     }
 
@@ -352,8 +351,8 @@ class Auth {
             } elseif (strlen($username) < MIN_USERNAME_LENGTH) {
                 $this->errormsg[] = $this->language->get('register_username_short');
             } elseif (!preg_match("/^[a-zA-Z\p{Cyrillic}0-9]+$/u", $username)) {
-				$this->errormsg[] = $this->language->get('Username is Invalid');
-			}
+							$this->errormsg[] = $this->language->get('Username is Invalid');
+						}
             if (strlen($password) == 0) {
                 $this->errormsg[] = $this->language->get('register_password_empty');
             } elseif (strlen($password) > MAX_PASSWORD_LENGTH) {
@@ -374,7 +373,7 @@ class Auth {
             } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $this->errormsg[] = $this->language->get('register_email_invalid');
             }
-            if (count($this->errormsg) == 0) {
+            if (!isset($this->errormsg) || count($this->errormsg) == 0) {
                 // Input is valid
                 $query = $this->authorize->getAccountInfo($username);
                 $count = count($query);
@@ -397,10 +396,10 @@ class Auth {
                         $password = $this->hashPass($password);
                         $activekey = $this->randomKey(RANDOM_KEY_LENGTH); // Create a random key for account activation
                         $info = array("username" => $username, "password" => $password, "email" => $email, "activekey" => $activekey, "userImage"=>"default-".rand(1,5).".jpg", "pass_change_timestamp" => date("Y-m-d H:i:s"));
-                        $user_id = $this->authorize->addIntoDB("oauth_users", $info);
+                        $user_id = $this->authorize->addIntoDB("users", $info);
 
                         $info = array('userID' => $user_id, 'groupID' => 1);
-                        $this->authorize->addIntoDB("uap4_users_groups",$info);
+                        $this->authorize->addIntoDB("users_groups",$info);
 
                         $this->logActivity($username, "AUTH_REGISTER_SUCCESS", "Account created");
                         $this->successmsg[] = $this->language->get('register_success');
@@ -421,7 +420,7 @@ class Auth {
 								}
 								/* Error Message Display */
 								ErrorMessages::push($this->language->get('register_error')." ".$error_data, 'Register');
-                				return false; // Return Error
+                return false; // Return Error
             }
         } else {
             // User is logged in
@@ -451,8 +450,8 @@ class Auth {
             } elseif (strlen($username) < MIN_USERNAME_LENGTH) {
                 $this->errormsg[] = $this->language->get('register_username_short');
             } elseif (!preg_match("/^[a-zA-Z\p{Cyrillic}0-9]+$/u", $username)) {
-				$this->errormsg[] = $this->language->get('Username is Invalid');
-			}
+								$this->errormsg[] = $this->language->get('Username is Invalid');
+						}
             if (strlen($password) == 0) {
                 $this->errormsg[] = $this->language->get('register_password_empty');
             } elseif (strlen($password) > MAX_PASSWORD_LENGTH) {
@@ -473,7 +472,7 @@ class Auth {
             } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $this->errormsg[] = $this->language->get('register_email_invalid');
             }
-            if (count($this->errormsg) == 0) {
+            if (!isset($this->errormsg) || count($this->errormsg) == 0) {
                 // Input is valid
                 $query = $this->authorize->getAccountInfo($username);
                 $count = count($query);
@@ -496,14 +495,14 @@ class Auth {
                         $password = $this->hashPass($password);
                         $activekey = $this->randomKey(RANDOM_KEY_LENGTH);
                         $info = array("username" => $username, "password" => $password, "email" => $email, "activekey" => $activekey, "userImage"=>"default-".rand(1,5).".jpg", "pass_change_timestamp" => date("Y-m-d H:i:s"));
-                        $user_id = $this->authorize->addIntoDB("oauth_users", $info);
+                        $user_id = $this->authorize->addIntoDB("users", $info);
 
                         $info = array('userID' => $user_id, 'groupID' => 1);
-                        $this->authorize->addIntoDB("uap4_users_groups",$info);
+                        $this->authorize->addIntoDB("users_groups",$info);
                         //EMAIL MESSAGE USING PHPMAILER
                         $mail = new \Libs\PhpMailer\Mail();
                         $mail->addAddress($email);
-						$mail->setFrom(SITEEMAIL, EMAIL_FROM_NAME);
+												$mail->setFrom(SITEEMAIL, EMAIL_FROM_NAME);
                         $mail->subject(SITE_TITLE. " - EMAIL VERIFICATION");
                         $body = $this->language->get('regi_email_hello')." {$username}<br/><br/>";
                         $body .= $this->language->get('regi_email_recently_registered')." ".SITE_TITLE."<br/>";
@@ -555,11 +554,11 @@ class Auth {
 
         //username exists
         if(sizeof($query_active)>0){
-            $db_email_verified = $query_active[0]->email_verified;
+            $db_isactive = $query_active[0]->isactive;
             $db_key = $query_active[0]->activekey;
 
             //username is already activated
-            if($db_email_verified){
+            if($db_isactive){
                 $this->logActivity($username, "AUTH_ACTIVATE_ERROR", "Activation failed. Account already activated.");
 								ErrorMessages::push($this->language->get('activate_account_activated'), 'Login');
                 return false;
@@ -568,9 +567,9 @@ class Auth {
                 //key is same as in database
                 if($db_key == $key){
 
-                    $info = array("email_verified" => 1, "activekey" => 0);
+                    $info = array("isactive" => 1, "activekey" => 0);
                     $where = array("username" => $username);
-                    $activated = $this->authorize->updateInDB("oauth_users", $info, $where);
+                    $activated = $this->authorize->updateInDB("users", $info, $where);
 
                     //accounct activated only if the db class returns number of rows affected
                     if ($activated > 0) {
@@ -632,11 +631,11 @@ class Auth {
             $this->errormsg[] = $this->language->get('logactivity_addinfo_long');
             return false;
         }
-        if (count($this->errormsg) == 0) {
+        if (!isset($this->errormsg) || count($this->errormsg) == 0) {
             $ip = $_SERVER['REMOTE_ADDR'];
             $date = date("Y-m-d H:i:s");
             $info = array("date" => $date, "username" => $username, "action" => $action, "additionalinfo" => $additionalinfo, "ip" => $ip);
-            $this->authorize->addIntoDB("uap4_activitylog", $info);
+            $this->authorize->addIntoDB("activitylog", $info);
             return true;
         }
     }
@@ -647,10 +646,9 @@ class Auth {
      * @return string $hashed_password
      */
     private function hashPass($password) {
-        // this options should be on Setup.php
+        // this options should be on Config.php
         $options = [
-            'cost' => COST,
-            'salt' => mcrypt_create_iv(HASH_LENGTH, MCRYPT_DEV_URANDOM)
+            'cost' => COST
         ];
         return \Libs\Password::make($password, PASSWORD_BCRYPT, $options);
     }
@@ -703,7 +701,7 @@ class Auth {
         } elseif ($newpass !== $verifynewpass) {
             $this->errormsg[] = $this->language->get('changepass_password_nomatch');
         }
-        if (count($this->errormsg) == 0) {
+        if (!isset($this->errormsg) || count($this->errormsg) == 0) {
             //$currpass = $this->hashPass($currpass);
             $newpass = $this->hashPass($newpass);
             $query = $this->authorize->getAccountInfo($username);
@@ -718,7 +716,7 @@ class Auth {
                 if ($verify_password) {
                     $info = array("password" => $newpass, "pass_change_timestamp" => date("Y-m-d H:i:s"));
                     $where = array("username" => $username);
-                    $this->authorize->updateInDB('oauth_users',$info,$where);
+                    $this->authorize->updateInDB('users',$info,$where);
                     $this->logActivity($username, "AUTH_CHANGEPASS_SUCCESS", "Password changed");
                     $this->successmsg[] = $this->language->get('changepass_success');
                     return true;
@@ -774,7 +772,7 @@ class Auth {
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $this->errormsg[] = $this->language->get('changeemail_email_invalid');
         }
-        if (count($this->errormsg) == 0) {
+        if (!isset($this->errormsg) || count($this->errormsg) == 0) {
             $query = $this->authorize->getAccountInfo($username);
             $count = count($query);
             if ($count == 0) {
@@ -790,7 +788,7 @@ class Auth {
                 } else {
                     $info = array("email" => $email);
                     $where = array("username" => $username);
-                    $this->authorize->updateInDB("oauth_users", $info, $where);
+                    $this->authorize->updateInDB("users", $info, $where);
                     $this->logActivity($username, "AUTH_CHANGEEMAIL_SUCCESS", "Email changed from {$db_email} to {$email}");
                     $this->successmsg[] = $this->language->get('changeemail_success');
                     return true;
@@ -844,7 +842,7 @@ class Auth {
                     $username = $query[0]->username;
                     $info = array("resetkey" => $resetkey);
                     $where = array("username" => $username);
-                    $this->authorize->updateInDB("oauth_users",$info , $where);
+                    $this->authorize->updateInDB("users",$info , $where);
 
                     //EMAIL MESSAGE USING PHPMAILER
                     $mail = new \Libs\PhpMailer\Mail();
@@ -881,7 +879,7 @@ class Auth {
                 } elseif ($newpass !== $verifynewpass) {
                     $this->errormsg[] = $this->language->get('resetpass_newpass_nomatch');
                 }
-                if (count($this->errormsg) == 0) {
+                if (!isset($this->errormsg) || count($this->errormsg) == 0) {
                     $query = $this->authorize->getAccountInfo($username);
                     $count = count($query);
                     if ($count == 0) {
@@ -900,7 +898,7 @@ class Auth {
                             $resetkey = '0';
                             $info = array("password" => $newpass, "resetkey" => $resetkey);
                             $where = array("username" => $username);
-                            $this->authorize->updateInDB("oauth_users", $info, $where);
+                            $this->authorize->updateInDB("users", $info, $where);
                             $this->logActivity($username, "AUTH_RESETPASS_SUCCESS", "Password reset - Key reset");
                             $this->successmsg[] = $this->language->get('resetpass_success');
                             return true;
@@ -996,7 +994,7 @@ class Auth {
         } elseif (strlen($password) < MIN_PASSWORD_LENGTH) {
             $this->errormsg[] = $this->language->get('deleteaccount_password_short');
         }
-        if (count($this->errormsg) == 0) {
+        if (!isset($this->errormsg) || count($this->errormsg) == 0) {
 
             $query = $this->authorize->getAccountInfo($username);
             $count = count($query);
@@ -1057,14 +1055,14 @@ class Auth {
                 // Check DataBase to see if email user is activated
                 $query = $this->authorize->getAccountInfoEmail($email);
                 $count = count($query);
-                if ($count != 0 && $query[0]->email_verified == 0) {
+                if ($count != 0 && $query[0]->isactive == 0) {
                     // User Account Is not yet active.  Lets get data to resend their activation with new key
                     $username = $query[0]->username;
                     $activekey = $this->randomKey(RANDOM_KEY_LENGTH);
                     // Store the new key in the user's database
                     $info = array('activekey' => $activekey);
                     $where = array('username' => $username);
-                    $this->authorize->updateInDB('oauth_users',$info,$where);
+                    $this->authorize->updateInDB('users',$info,$where);
                     //EMAIL MESSAGE USING PHPMAILER
                     $mail = new \Libs\PhpMailer\Mail();
                     $mail->addAddress($email);
@@ -1102,7 +1100,7 @@ class Auth {
      * @return int
      */
     public function updateUser($data,$where){
-        return $this->authorize->updateInDB('oauth_users',$data,$where);
+        return $this->authorize->updateInDB('users',$data,$where);
     }
 
     /**

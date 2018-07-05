@@ -4,7 +4,7 @@
  *
  * UserApplePie
  * @author David (DaVaR) Sargent <davar@userapplepie.com>
- * @version 4.0.0
+ * @version 4.2.1
  */
 
 namespace App\Controllers;
@@ -101,7 +101,7 @@ class Members extends Controller
 
         /** Setup Breadcrumbs **/
     		$data['breadcrumbs'] = "
-    			<li class='active'>".$data['title']."</li>
+    			<li class='breadcrumb-item active'>".$data['title']."</li>
         ";
 
         Load::View("Members/Members", $data, "Members/Member-Stats-Sidebar::Left");
@@ -146,7 +146,7 @@ class Members extends Controller
 
         /** Setup Breadcrumbs **/
     		$data['breadcrumbs'] = "
-    			<li class='active'>".$data['title']."</li>
+    			<li class='breadcrumb-item active'>".$data['title']."</li>
         ";
 
         Load::View("Members/Members", $data, "Members/Member-Stats-Sidebar::Left");
@@ -177,7 +177,7 @@ class Members extends Controller
 
             /** Setup Breadcrumbs **/
         		$data['breadcrumbs'] = "
-        			<li class='active'>".$data['title']."</li>
+        			<li class='breadcrumb-item active'>".$data['title']."</li>
             ";
 
             Load::View("Members/View-Profile", $data);
@@ -196,8 +196,8 @@ class Members extends Controller
 
             if (isset($_POST['submit'])) {
                 if(Csrf::isTokenValid('editprofile')) {
-                    $first_name = strip_tags(Request::post('first_name'));
-                    $last_name = strip_tags(Request::post('last_name'));
+                    $firstName = strip_tags(Request::post('firstName'));
+                    $lastName = strip_tags(Request::post('lastName'));
                     $gender = Request::post('gender') == 'male' ? 'Male' : 'Female';
                     $website = strip_tags(preg_replace('#^https?://#', '', Request::post('website')));
                     $aboutMe = nl2br(strip_tags(Request::post('aboutMe')));
@@ -242,12 +242,12 @@ class Members extends Controller
                         $db_image = $userImage;
                     }
                     /* Check to make sure First Name does not have any html char in it */
-                    if($first_name != strip_tags($first_name)){
+                    if($firstName != strip_tags($firstName)){
                         /* Error Message Display */
                         ErrorMessages::push($this->language->get('edit_profile_firstname_error'), 'Edit-Profile');
                     }
                     /* Check to make sure Last Name does not have any html char in it */
-                    if($last_name != strip_tags($last_name)){
+                    if($lastName != strip_tags($lastName)){
                         /* Error Message Display */
                         ErrorMessages::push($this->language->get('edit_profile_lastname_error'), 'Edit-Profile');
                     }
@@ -262,7 +262,7 @@ class Members extends Controller
                     $aboutMe = strip_tags($aboutMe, "<br>");
                     $signature = strip_tags($signature, "<br>");
 
-                    $onlineUsers->updateProfile($u_id, $first_name, $last_name, $gender, $website, $db_image, $aboutMe, $signature);
+                    $onlineUsers->updateProfile($u_id, $firstName, $lastName, $gender, $website, $db_image, $aboutMe, $signature);
                     // Success Message Display
                     SuccessMessages::push($this->language->get('edit_profile_success'), 'Edit-Profile');
                 }
@@ -293,11 +293,11 @@ class Members extends Controller
 
             /** Setup Breadcrumbs **/
         		$data['breadcrumbs'] = "
-              <li><a href='".SITE_URL."Account-Settings'>".$this->language->get('mem_act_settings_title')."</a></li>
-        			<li class='active'>".$data['title']."</li>
+              <li class='breadcrumb-item'><a href='".SITE_URL."Account-Settings'>".$this->language->get('mem_act_settings_title')."</a></li>
+        			<li class='breadcrumb-item active'>".$data['title']."</li>
             ";
 
-            Load::View("Members/Edit-Profile", $data, "Members/Member-Account-Sidebar::Left");
+            Load::View("Members/Edit-Profile", $data, "Members/MAH-Member-Account-Sidebar::Left");
 
         }else{
           /** User Not logged in - kick them out **/
@@ -326,10 +326,10 @@ class Members extends Controller
 
         /** Setup Breadcrumbs **/
     		$data['breadcrumbs'] = "
-    			<li class='active'>".$data['title']."</li>
+    			<li class='breadcrumb-item active'>".$data['title']."</li>
         ";
 
-        Load::View("Members/Account-Settings", $data, "Members/Member-Account-Sidebar::Left");
+        Load::View("Members/Account-Settings", $data, "Members/MAH-Member-Account-Sidebar::Left");
     }
 
     /**
@@ -381,416 +381,10 @@ class Members extends Controller
 
         /** Setup Breadcrumbs **/
     		$data['breadcrumbs'] = "
-          <li><a href='".SITE_URL."Account-Settings'>".$this->language->get('mem_act_settings_title')."</a></li>
-    			<li class='active'>".$data['title']."</li>
+          <li class='breadcrumb-item'><a href='".SITE_URL."Account-Settings'>".$this->language->get('mem_act_settings_title')."</a></li>
+    			<li class='breadcrumb-item active'>".$data['title']."</li>
         ";
 
-        Load::View("Members/Privacy-Settings", $data, "Members/Member-Account-Sidebar::Left");
+        Load::View("Members/Privacy-Settings", $data, "Members/MAH-Member-Account-Sidebar::Left");
     }
-
-    /**
-     * Page for MAH Account Settings Home
-     */
-    public function MAHSettings()
-    {
-      $u_id = $this->auth->currentSessionInfo()['uid'];
-
-      $onlineUsers = new MembersModel();
-      $username = $onlineUsers->getUserName($u_id);
-
-      $user_name = $username[0]->username;
-
-      $MAHprofile = $onlineUsers->getMAHProfile($u_id);
-      $data['MAHprofile'] = $MAHprofile[0];
-
-      $house_id = $data['MAHprofile']->house_id;
-
-      $MAHprofileHouse = $onlineUsers->getMAHProfileHouse($data['MAHprofile']->house_id);
-      $data['MAHprofileHouse'] = $MAHprofileHouse[0];
-
-      $data['csrfToken'] = Csrf::makeToken('edithouse');
-
-      $data['title'] = "MAH - Settings";
-
-      /** Check to see if user is logged in **/
-      if($data['isLoggedIn'] = $this->auth->isLogged()){
-       //** User is logged in - Get their data **/
-       $u_id = $this->auth->user_info();
-       $data['currentUserData'] = $this->user->getCurrentUserData($u_id);
-       $data['isAdmin'] = $this->user->checkIsAdmin($u_id);
-      }else{
-       /** User Not logged in - kick them out **/
-       \Libs\ErrorMessages::push($this->language->get('user_not_logged_in'), 'Login');
-      }
-
-      /** Setup Breadcrumbs **/
-      $data['breadcrumbs'] = "
-       <li><a href='".SITE_URL."MAHSettings'>My Arduino Home</a></li>
-       <li class='active'>".$data['title']."</li>
-      ";
-
-      if(sizeof($user_name) > 0){
-
-         if (isset($_POST['submit'])) {
-          if(Csrf::isTokenValid('edithouse')) {
-            $new_house = strip_tags(Request::post('new_house'));
-            $gen_new_house_token = strip_tags(Request::post('gen_new_house_token'));
-            // Check to see if user is adding a new house profile
-            if($new_house == "true"){
-              $boards = strip_tags(Request::post('boards'));
-              $temp_sensors = strip_tags(Request::post('temp_sensors'));
-              $garage_doors = strip_tags(Request::post('garage_doors'));
-              // Get new house token
-              $house_token = bin2hex(openssl_random_pseudo_bytes(25));
-              // Create new house profile
-              $new_house_id = $onlineUsers->createMAHProfileHouse($house_token);
-              // Add current user to house perm list
-              $onlineUsers->createMAHProfileHousePerms($new_house_id, $u_id);
-              // Create Relays Profile
-              $onlineUsers->createMAHProfileHouseRelays($new_house_id, $boards);
-              // Create Grage Doors Profile
-              $onlineUsers->createMAHProfileHouseDoors($new_house_id, $garage_doors);
-              // Create Temperature Sensors Profile
-              $onlineUsers->createMAHProfileHouseTemps($new_house_id, $temp_sensors);
-              if(isset($new_house_id)){
-                // Success Message Display
-                SuccessMessages::push("MAH House Settings Created!", 'MAHSettings');
-              }else{
-                // Error Message Display
-                ErrorMessages::push("Error Updating MAH House Settings!", 'MAHSettings');
-              }
-            }else{
-              /* Check to see if user wants to generate a new house token */
-              $gen_new_house_token = strip_tags(Request::post('gen_new_house_token'));
-              if($gen_new_house_token == "true"){
-                $house_token = bin2hex(openssl_random_pseudo_bytes(25));
-              }else{
-                $house_token = strip_tags(Request::post('house_token'));
-              }
-
-              /* Check to make sure house_token does not have any html char in it */
-              if($house_token != strip_tags($house_token)){
-                /* Error Message Display */
-                ErrorMessages::push("Error With House Token!", 'MAHSettings');
-              }
-              $onlineUsers->updateMAHProfileHouse($house_id, $house_token);
-              // Success Message Display
-              SuccessMessages::push("MAH House Settings Updated!", 'MAHSettings');
-            }
-          }
-          else{
-            // Error Message Display
-            ErrorMessages::push("Error Updating MAH House Settings!", 'MAHSettings');
-          }
-
-         }
-         // Check to see if user has setup a shc profile or not
-          if(isset($house_id)){
-            Load::View("Members/MAHSettings", $data, "Members/Member-Account-Sidebar::Left");
-          }else{
-            Load::View("Members/MAHSettingsNew", $data, "Members/Member-Account-Sidebar::Left");
-          }
-      }else{
-       /** User Not logged in - kick them out **/
-       \Libs\ErrorMessages::push($this->language->get('user_not_logged_in'), 'Login');
-      }
-    }
-
-    /**
-     * Page for MAH Temp Sensors
-     */
-    public function MAHTempSensors()
-    {
-      $u_id = $this->auth->currentSessionInfo()['uid'];
-
-      $onlineUsers = new MembersModel();
-      $username = $onlineUsers->getUserName($u_id);
-
-      $user_name = $username[0]->username;
-
-      $MAHprofile = $onlineUsers->getMAHProfile($u_id);
-      $data['MAHprofile'] = $MAHprofile[0];
-
-      $house_id = $data['MAHprofile']->house_id;
-
-      $MAHprofileHouse = $onlineUsers->getMAHProfileHouse($data['MAHprofile']->house_id);
-      $data['MAHprofileHouse'] = $MAHprofileHouse[0];
-
-      /* Get Temp Sensors Information */
-      $data['temp_sensors'] = $onlineUsers->getHouseTempSensors($data['MAHprofile']->house_id);
-
-      $data['csrfToken'] = Csrf::makeToken('edithouse');
-
-      $data['title'] = "MAH - Temperature Sensors";
-
-      /** Check to see if user is logged in **/
-      if($data['isLoggedIn'] = $this->auth->isLogged()){
-       //** User is logged in - Get their data **/
-       $u_id = $this->auth->user_info();
-       $data['currentUserData'] = $this->user->getCurrentUserData($u_id);
-       $data['isAdmin'] = $this->user->checkIsAdmin($u_id);
-      }else{
-       /** User Not logged in - kick them out **/
-       \Libs\ErrorMessages::push($this->language->get('user_not_logged_in'), 'Login');
-      }
-
-      /** Setup Breadcrumbs **/
-      $data['breadcrumbs'] = "
-       <li><a href='".SITE_URL."MAHSettings'>My Arduino Home</a></li>
-       <li class='active'>".$data['title']."</li>
-      ";
-
-        if (isset($_POST['submit'])) {
-          if(Csrf::isTokenValid('edithouse')) {
-            $temp_server_name = Request::post('temp_server_name');
-            $temp_title = Request::post('temp_title');
-            $temp_alexa_name = Request::post('temp_alexa_name');
-            $enable = Request::post('enable');
-
-            foreach ($temp_server_name as $tsn) {
-              $temp_title_new = $temp_title["$tsn"];
-              $temp_alexa_name_new = $temp_alexa_name["$tsn"];
-              $temp_enable = $enable["$tsn"];
-              if($temp_enable != "1"){ $temp_enable = "0"; }
-              $tsUpdate = $onlineUsers->updateMAHTempSensors($house_id, $tsn, $temp_title_new, $temp_alexa_name_new, $temp_enable);
-            }
-            $tsUpdateCount = count($tsUpdate);
-            if($tsUpdateCount > 0){
-              // Success Message Display
-              SuccessMessages::push("MAH Temp Sensors Settings Updated!", 'MAHTempSensors');
-            }else{
-              // Error Message Display
-              ErrorMessages::push("Error Updating MAH Temp Sensors Settings!", 'MAHTempSensors');
-            }
-          }
-        }
-         Load::View("Members/MAHTempSensors", $data, "Members/Member-Account-Sidebar::Left");
-
-    }
-
-    /**
-     * Page for MAH Lights
-     */
-    public function MAHLights()
-    {
-      $u_id = $this->auth->currentSessionInfo()['uid'];
-
-      $onlineUsers = new MembersModel();
-      $username = $onlineUsers->getUserName($u_id);
-
-      $user_name = $username[0]->username;
-
-      $MAHprofile = $onlineUsers->getMAHProfile($u_id);
-      $data['MAHprofile'] = $MAHprofile[0];
-
-      $house_id = $data['MAHprofile']->house_id;
-
-      $MAHprofileHouse = $onlineUsers->getMAHProfileHouse($data['MAHprofile']->house_id);
-      $data['MAHprofileHouse'] = $MAHprofileHouse[0];
-
-      /* Get Temp Sensors Information */
-      $data['lights'] = $onlineUsers->getHouseLights($data['MAHprofile']->house_id);
-
-      $data['csrfToken'] = Csrf::makeToken('edithouse');
-
-      $data['title'] = "MAH - Lights";
-
-      /** Check to see if user is logged in **/
-      if($data['isLoggedIn'] = $this->auth->isLogged()){
-       //** User is logged in - Get their data **/
-       $u_id = $this->auth->user_info();
-       $data['currentUserData'] = $this->user->getCurrentUserData($u_id);
-       $data['isAdmin'] = $this->user->checkIsAdmin($u_id);
-      }else{
-       /** User Not logged in - kick them out **/
-       \Libs\ErrorMessages::push($this->language->get('user_not_logged_in'), 'Login');
-      }
-
-      /** Setup Breadcrumbs **/
-      $data['breadcrumbs'] = "
-       <li><a href='".SITE_URL."MAHSettings'>My Arduino Home</a></li>
-       <li class='active'>".$data['title']."</li>
-      ";
-
-        if (isset($_POST['submit'])) {
-          if(Csrf::isTokenValid('edithouse')) {
-            $relay_server_name = Request::post('relay_server_name');
-            $relay_title = Request::post('relay_title');
-            $relay_alexa_name = Request::post('relay_alexa_name');
-            $enable = Request::post('enable');
-
-            foreach ($relay_server_name as $rsn) {
-              $relay_title_new = $relay_title["$rsn"];
-              $relay_alexa_name_new = $relay_alexa_name["$rsn"];
-              $relay_enable = $enable["$rsn"];
-              if($relay_enable != "1"){ $relay_enable = "0"; }
-              $rsUpdate = $onlineUsers->updateMAHLights($house_id, $rsn, $relay_title_new, $relay_alexa_name_new, $relay_enable);
-            }
-            $rsUpdateCount = count($rsUpdate);
-            if($rsUpdateCount > 0){
-              // Success Message Display
-              SuccessMessages::push("MAH Temp Sensors Settings Updated!", 'MAHLights');
-            }else{
-              // Error Message Display
-              ErrorMessages::push("Error Updating MAH Temp Sensors Settings!", 'MAHLights');
-            }
-          }
-        }
-         Load::View("Members/MAHLights", $data, "Members/Member-Account-Sidebar::Left");
-
-    }
-
-    /**
-     * Page for MAH Inputs and Outputs
-     */
-    public function MAHGarageDoors()
-    {
-      $u_id = $this->auth->currentSessionInfo()['uid'];
-
-      $onlineUsers = new MembersModel();
-      $username = $onlineUsers->getUserName($u_id);
-
-      $user_name = $username[0]->username;
-
-      $MAHprofile = $onlineUsers->getMAHProfile($u_id);
-      $data['MAHprofile'] = $MAHprofile[0];
-
-      $house_id = $data['MAHprofile']->house_id;
-
-      $MAHprofileHouse = $onlineUsers->getMAHProfileHouse($data['MAHprofile']->house_id);
-      $data['MAHprofileHouse'] = $MAHprofileHouse[0];
-
-      /* Get Temp Sensors Information */
-      $data['doors'] = $onlineUsers->getHouseGarageDoors($data['MAHprofile']->house_id);
-
-      $data['csrfToken'] = Csrf::makeToken('edithouse');
-
-      $data['title'] = "MAH - Garage Doors";
-
-      /** Check to see if user is logged in **/
-      if($data['isLoggedIn'] = $this->auth->isLogged()){
-       //** User is logged in - Get their data **/
-       $u_id = $this->auth->user_info();
-       $data['currentUserData'] = $this->user->getCurrentUserData($u_id);
-       $data['isAdmin'] = $this->user->checkIsAdmin($u_id);
-      }else{
-       /** User Not logged in - kick them out **/
-       \Libs\ErrorMessages::push($this->language->get('user_not_logged_in'), 'Login');
-      }
-
-      /** Setup Breadcrumbs **/
-      $data['breadcrumbs'] = "
-       <li><a href='".SITE_URL."MAHSettings'>My Arduino Home</a></li>
-       <li class='active'>".$data['title']."</li>
-      ";
-
-        if (isset($_POST['submit'])) {
-          if(Csrf::isTokenValid('edithouse')) {
-            $door_id = Request::post('door_id');
-            $door_title = Request::post('door_title');
-            $door_alexa_name = Request::post('door_alexa_name');
-            $enable = Request::post('enable');
-
-            foreach ($door_id as $dsn) {
-              $door_title_new = $door_title["$dsn"];
-              $door_alexa_name_new = $door_alexa_name["$dsn"];
-              $door_enable = $enable["$dsn"];
-              if($door_enable != "1"){ $door_enable = "0"; }
-              $dsUpdate = $onlineUsers->updateMAHGarageDoors($house_id, $dsn, $door_title_new, $door_alexa_name_new, $door_enable);
-            }
-            $dsUpdateCount = count($dsUpdate);
-            if($dsUpdateCount > 0){
-              // Success Message Display
-              SuccessMessages::push("MAH Temp Sensors Settings Updated!", 'MAHGarageDoors');
-            }else{
-              // Error Message Display
-              ErrorMessages::push("Error Updating MAH Temp Sensors Settings!", 'MAHGarageDoors');
-            }
-          }
-        }
-         Load::View("Members/MAHGarageDoors", $data, "Members/Member-Account-Sidebar::Left");
-
-    }
-
-
-    /**
-     * Page for MAH Account Settings Home
-     */
-    public function MAHArduinoCode()
-    {
-      $u_id = $this->auth->currentSessionInfo()['uid'];
-
-      $onlineUsers = new MembersModel();
-      $username = $onlineUsers->getUserName($u_id);
-
-      $user_name = $username[0]->username;
-
-      $MAHprofile = $onlineUsers->getMAHProfile($u_id);
-      $data['MAHprofile'] = $MAHprofile[0];
-
-      $house_id = $data['MAHprofile']->house_id;
-
-      $MAHprofileHouse = $onlineUsers->getMAHProfileHouse($data['MAHprofile']->house_id);
-      $data['MAHprofileHouse'] = $MAHprofileHouse[0];
-
-      $data['csrfToken'] = Csrf::makeToken('edithouse');
-
-      $data['title'] = "MAH - Arduino Code";
-
-      /** Check to see if user is logged in **/
-      if($data['isLoggedIn'] = $this->auth->isLogged()){
-       //** User is logged in - Get their data **/
-       $u_id = $this->auth->user_info();
-       $data['currentUserData'] = $this->user->getCurrentUserData($u_id);
-       $data['isAdmin'] = $this->user->checkIsAdmin($u_id);
-      }else{
-       /** User Not logged in - kick them out **/
-       \Libs\ErrorMessages::push($this->language->get('user_not_logged_in'), 'Login');
-      }
-
-      /** Setup Breadcrumbs **/
-      $data['breadcrumbs'] = "
-       <li><a href='".SITE_URL."MAHSettings'>My Arduino Home</a></li>
-       <li class='active'>".$data['title']."</li>
-      ";
-
-      Load::View("Members/MAHArduinoCode", $data, "Members/Member-Account-Sidebar::Left");
-
-    }
-
-    /**
-     * Page for MAH Account Settings Home
-     */
-    public function MAHArduinoCodeDownload()
-    {
-      $u_id = $this->auth->currentSessionInfo()['uid'];
-
-      $onlineUsers = new MembersModel();
-      $username = $onlineUsers->getUserName($u_id);
-
-      $user_name = $username[0]->username;
-
-      $MAHprofile = $onlineUsers->getMAHProfile($u_id);
-      $data['MAHprofile'] = $MAHprofile[0];
-
-      $house_id = $data['MAHprofile']->house_id;
-
-      $MAHprofileHouse = $onlineUsers->getMAHProfileHouse($data['MAHprofile']->house_id);
-      $data['MAHprofileHouse'] = $MAHprofileHouse[0];
-
-      /** Check to see if user is logged in **/
-      if($data['isLoggedIn'] = $this->auth->isLogged()){
-       //** User is logged in - Get their data **/
-       $u_id = $this->auth->user_info();
-       $data['currentUserData'] = $this->user->getCurrentUserData($u_id);
-       $data['isAdmin'] = $this->user->checkIsAdmin($u_id);
-      }else{
-       /** User Not logged in - kick them out **/
-       \Libs\ErrorMessages::push($this->language->get('user_not_logged_in'), 'Login');
-      }
-
-      Load::View("Members/MAHArduinoCodeDownload", $data, "", "", false);
-
-    }
-
 }

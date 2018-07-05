@@ -4,7 +4,7 @@
  *
  * UserApplePie
  * @author David (DaVaR) Sargent <davar@userapplepie.com>
- * @version 4.0.0
+ * @version 4.2.1
  */
 
  namespace App\Models;
@@ -20,7 +20,7 @@ class Members extends Models
      */
     public function getActivatedAccounts()
     {
-        return $this->db->select('SELECT * FROM oauth_users WHERE email_verified = true');
+        return $this->db->select('SELECT * FROM '.PREFIX.'users WHERE isactive = true');
     }
 
     /**
@@ -58,10 +58,10 @@ class Members extends Models
 				SELECT
 					u.userID,
 					u.username,
-					u.first_name,
-                    u.last_name,
+					u.firstName,
+                    u.lastName,
                     u.userImage,
-					u.email_verified,
+					u.isactive,
 					ug.userID,
 					ug.groupID,
 					g.groupID,
@@ -69,17 +69,17 @@ class Members extends Models
 					g.groupFontColor,
 					g.groupFontWeight
 				FROM
-					oauth_users u
+					".PREFIX."users u
 				LEFT JOIN
-					oauth_users_groups ug
+					".PREFIX."users_groups ug
 					ON u.userID = ug.userID
 				LEFT JOIN
 					".PREFIX."groups g
 					ON ug.groupID = g.groupID
 				WHERE
-                    (u.username LIKE :search OR u.first_name LIKE :search OR u.last_name LIKE :search)
+                    (u.username LIKE :search OR u.firstName LIKE :search OR u.lastName LIKE :search)
                 AND
-					u.email_verified = true
+					u.isactive = true
 				GROUP BY
 					u.userID
                 ORDER BY
@@ -92,10 +92,10 @@ class Members extends Models
                 SELECT
                     u.userID,
                     u.username,
-                    u.first_name,
-                    u.last_name,
+                    u.firstName,
+                    u.lastName,
                     u.userImage,
-                    u.email_verified,
+                    u.isactive,
                     ug.userID,
                     ug.groupID,
                     g.groupID,
@@ -103,15 +103,15 @@ class Members extends Models
                     g.groupFontColor,
                     g.groupFontWeight
                 FROM
-                    oauth_users u
+                    ".PREFIX."users u
                 LEFT JOIN
-                    oauth_users_groups ug
+                    ".PREFIX."users_groups ug
                     ON u.userID = ug.userID
                 LEFT JOIN
                     ".PREFIX."groups g
                     ON ug.groupID = g.groupID
                 WHERE
-                    u.email_verified = true
+                    u.isactive = true
                 GROUP BY
                     u.userID
                 ORDER BY
@@ -135,9 +135,9 @@ class Members extends Models
           SELECT
             *
           FROM
-            oauth_users
+            ".PREFIX."users
           WHERE
-  					email_verified = true
+  					isactive = true
           ");
       return count($data);
     }
@@ -153,14 +153,14 @@ class Members extends Models
       $data = $this->db->select("
             SELECT
                 username,
-                first_name,
-                last_name
+                firstName,
+                lastName
             FROM
-                oauth_users
+                ".PREFIX."users
             WHERE
-                (username LIKE :search OR first_name LIKE :search OR last_name LIKE :search)
+                (username LIKE :search OR firstName LIKE :search OR lastName LIKE :search)
             AND
-  			    email_verified = true
+  			    isactive = true
             GROUP BY
                 userID
           ", array(':search' => '%'.$search.'%'));
@@ -177,8 +177,8 @@ class Members extends Models
 				SELECT
 					u.userID,
 					u.username,
-					u.first_name,
-                    u.last_name,
+					u.firstName,
+                    u.lastName,
                     u.userImage,
 					uo.userID,
 					ug.userID,
@@ -188,12 +188,12 @@ class Members extends Models
 					g.groupFontColor,
 					g.groupFontWeight
 				FROM
-					oauth_users_online uo
+					".PREFIX."users_online uo
 				LEFT JOIN
-					oauth_users u
+					".PREFIX."users u
 					ON u.userID = uo.userID
 				LEFT JOIN
-					oauth_users_groups ug
+					".PREFIX."users_groups ug
 					ON uo.userID = ug.userID
 				LEFT JOIN
 					".PREFIX."groups g
@@ -218,8 +218,8 @@ class Members extends Models
           SELECT
             u.userID,
             u.username,
-            u.first_name,
-            u.last_name,
+            u.firstName,
+            u.lastName,
             u.gender,
             u.userImage,
             u.LastLogin,
@@ -227,7 +227,7 @@ class Members extends Models
             u.website,
             u.aboutme,
             u.signature
-          FROM oauth_users u
+          FROM " . PREFIX . "users u
           WHERE u.userID = :userID",
             array(':userID' => $user));
       }else{
@@ -236,8 +236,8 @@ class Members extends Models
   					SELECT
   						u.userID,
   						u.username,
-  						u.first_name,
-              u.last_name,
+  						u.firstName,
+              u.lastName,
   						u.gender,
   						u.userImage,
   						u.LastLogin,
@@ -245,7 +245,7 @@ class Members extends Models
   						u.website,
   						u.aboutme,
               u.signature
-  					FROM oauth_users u
+  					FROM " . PREFIX . "users u
   					WHERE u.username = :username",
               array(':username' => $user));
       }
@@ -253,113 +253,21 @@ class Members extends Models
 
     public function getUserName($id)
     {
-        return $this->db->select("SELECT userID,username FROM oauth_users WHERE userID=:id",array(":id"=>$id));
+        return $this->db->select("SELECT userID,username FROM ".PREFIX."users WHERE userID=:id",array(":id"=>$id));
     }
 
-    public function updateProfile($u_id, $first_name, $last_name, $gender, $website, $userImage, $aboutme, $signature)
+    public function updateProfile($u_id, $firstName, $lastName, $gender, $website, $userImage, $aboutme, $signature)
     {
-        return $this->db->update('oauth_users', array('first_name' => $first_name, 'last_name' => $last_name, 'gender' => $gender, 'userImage' => $userImage, 'website' => $website, 'aboutme' => $aboutme, 'signature' => $signature), array('userID' => $u_id));
+        return $this->db->update(PREFIX.'users', array('firstName' => $firstName, 'lastName' => $lastName, 'gender' => $gender, 'userImage' => $userImage, 'website' => $website, 'aboutme' => $aboutme, 'signature' => $signature), array('userID' => $u_id));
     }
 
     public function updateUPrivacy($u_id, $privacy_massemail, $privacy_pm)
     {
-        $data = $this->db->update('oauth_users', array('privacy_massemail' => $privacy_massemail, 'privacy_pm' => $privacy_pm), array('userID' => $u_id));
+        $data = $this->db->update(PREFIX.'users', array('privacy_massemail' => $privacy_massemail, 'privacy_pm' => $privacy_pm), array('userID' => $u_id));
         if(count($data) > 0){
           return true;
         }else{
           return false;
         }
     }
-
-
-    /**
-     * Get specific user's MAH info
-     * @param $user_id
-     * @return array
-     */
-    public function getMAHProfile($user)
-    {
-        // Requeted profile information based on ID
-        return $this->db->select("SELECT * FROM " . PREFIX . "hc_user_perm WHERE user_id = :userID", array(':userID' => $user));
-
-    }
-    public function getMAHProfileHouse($house_id)
-    {
-        // Requeted profile information based on ID
-        return $this->db->select("SELECT * FROM " . PREFIX . "hc_house WHERE house_id = :house_id", array(':house_id' => $house_id));
-
-    }
-    public function updateMAHProfileHouse($house_id, $house_token)
-    {
-        return $this->db->update(PREFIX.'hc_house', array('house_token' => $house_token), array('house_id' => $house_id));
-    }
-    public function getHouseTempSensors($house_id)
-    {
-        return $this->db->select("SELECT * FROM " . PREFIX . "hc_temps WHERE house_id = :house_id", array(':house_id' => $house_id));
-    }
-    public function updateMAHTempSensors($house_id, $temp_server_name, $temp_title, $temp_alexa_name, $temp_enable)
-    {
-        return $this->db->update(PREFIX.'hc_temps', array('temp_title' => $temp_title, 'temp_alexa_name' => $temp_alexa_name, 'enable' => $temp_enable), array('house_id' => $house_id, 'temp_server_name' => $temp_server_name));
-    }
-    public function getHouseLights($house_id)
-    {
-        return $this->db->select("SELECT * FROM " . PREFIX . "hc_relays WHERE house_id = :house_id", array(':house_id' => $house_id));
-    }
-    public function updateMAHLights($house_id, $relay_server_name, $relay_title, $relay_alexa_name, $relay_enable)
-    {
-        return $this->db->update(PREFIX.'hc_relays', array('relay_title' => $relay_title, 'relay_alexa_name' => $relay_alexa_name, 'enable' => $relay_enable), array('house_id' => $house_id, 'relay_server_name' => $relay_server_name));
-    }
-    public function getHouseGarageDoors($house_id)
-    {
-        return $this->db->select("SELECT * FROM " . PREFIX . "hc_garage WHERE house_id = :house_id", array(':house_id' => $house_id));
-    }
-    public function updateMAHGarageDoors($house_id, $door_id, $door_title, $door_alexa_name, $door_enable)
-    {
-        return $this->db->update(PREFIX.'hc_garage', array('door_title' => $door_title, 'door_alexa_name' => $door_alexa_name, 'enable' => $door_enable), array('house_id' => $house_id, 'door_id' => $door_id));
-    }
-    // Create new house profile and return house id
-    public function createMAHProfileHouse($house_token){
-      $data = $this->db->insert(PREFIX.'hc_house', array('house_token' => $house_token));
-      $new_house_id = $this->db->lastInsertId('house_id');
-      $count = count($data);
-      if($count > 0){
-        return $new_house_id;
-      }else{
-        return false;
-      }
-    }
-    // Create new house profile permissions
-    public function createMAHProfileHousePerms($new_house_id, $u_id){
-      return $this->db->insert(PREFIX.'hc_user_perm', array('house_id' => $new_house_id, 'user_id' => $u_id));
-    }
-    // Create new house relays profile
-    public function createMAHProfileHouseRelays($new_house_id, $boards){
-      // Add All Lights To House Relays
-      $this->db->insert(PREFIX.'hc_relays', array('house_id' => $new_house_id, 'relay_server_name' => 'ALL_RELAYS', 'relay_title' => 'All Lights', 'relay_action' => 'ALL_OFF'));
-      // Get total number of relays based on boards count
-      $relay_count = $boards * 16;
-      for ($x = 1; $x <= $relay_count; $x++) {
-        $x = sprintf("%02d", $x);
-        $this->db->insert(PREFIX.'hc_relays', array('house_id' => $new_house_id, 'relay_server_name' => 'relay_'.$x, 'relay_title' => 'Light '.$x, 'relay_action' => 'LIGHT_OFF'));
-      }
-      return true;
-    }
-    // Create new house Garage Doors profile
-    public function createMAHProfileHouseDoors($new_house_id, $doors){
-      // Get total number of relays based on boards count
-      for ($x = 1; $x <= $doors; $x++) {
-        $this->db->insert(PREFIX.'hc_garage', array('house_id' => $new_house_id, 'door_id' => $x, 'door_title' => 'Garage Door '.$x, 'door_button' => 'DO_NOTHING', 'door_status' => 'CLOSED'));
-      }
-      return true;
-    }
-    // Create new house Temp Sensors profile
-    public function createMAHProfileHouseTemps($new_house_id, $temp_sensors){
-      // Get total number of relays based on boards count
-      for ($x = 1; $x <= $temp_sensors; $x++) {
-        $this->db->insert(PREFIX.'hc_temps', array('house_id' => $new_house_id, 'temp_title' => 'Temp '.$x, 'temp_server_name' => 'temp_'.$x));
-      }
-      return true;
-    }
-
-
 }

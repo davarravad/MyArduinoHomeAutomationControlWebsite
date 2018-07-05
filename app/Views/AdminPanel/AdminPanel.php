@@ -4,7 +4,7 @@
 *
 * UserApplePie
 * @author David (DaVaR) Sargent <davar@userapplepie.com>
-* @version 4.0.0
+* @version 4.2.1
 */
 
 if(isset($cur_uap_version) || isset($cur_uap_messages_version) || isset($cur_uap_forum_version) || isset($cur_uap_friends_version)){
@@ -37,68 +37,80 @@ if(isset($cur_uap_version) || isset($cur_uap_messages_version) || isset($cur_uap
 ?>
 <div class='col-lg-12 col-md-12 col-sm-12'>
 	<div class='row'>
-		<div class="col-xs-12 col-md-6 col-lg-3">
-			<div class="panel panel-blue panel-widget ">
-				<div class="row no-padding">
-					<div class="col-sm-3 col-lg-5 widget-left">
-						<i class='glyphicon glyphicon-user' style='font-size:38px'></i>
-					</div>
-					<div class="col-sm-9 col-lg-7 widget-right">
-						<div class="large"><?=$activatedAccounts?></div>
-						<div class="text-muted">Site Members</div>
-					</div>
-				</div>
+		<div class="col-xs-12 col-md-6 col-lg-3 mb-3">
+			<div class="card text-white bg-primary o-hidden h-100">
+            <div class="card-body">
+              <div class="card-body-icon">
+                <i class="fa fa-fw fa-user"></i>
+              </div>
+              <div class="mr-5"><?=$activatedAccounts?></div>
+            </div>
+            <a class="card-footer text-white clearfix small z-1" href="#">
+              <span class="float-left">Site Members</span>
+              <span class="float-right">
+                <i class="fa fa-angle-right"></i>
+              </span>
+            </a>
 			</div>
 		</div>
 
-		<div class="col-xs-12 col-md-6 col-lg-3">
-			<div class="panel panel-orange panel-widget ">
-				<div class="row no-padding">
-					<div class="col-sm-3 col-lg-5 widget-left">
-						<i class='glyphicon glyphicon-tower' style='font-size:38px'></i>
-					</div>
-					<div class="col-sm-9 col-lg-7 widget-right">
-						<div class="large"><?=$usergroups?></div>
-						<div class="text-muted">User Groups</div>
-					</div>
-				</div>
+		<div class="col-xs-12 col-md-6 col-lg-3 mb-3">
+			<div class="card text-white bg-warning o-hidden h-100">
+            <div class="card-body">
+              <div class="card-body-icon">
+                <i class="fa fa-fw fa-users"></i>
+              </div>
+              <div class="mr-5"><?=$usergroups?></div>
+            </div>
+            <a class="card-footer text-white clearfix small z-1" href="#">
+              <span class="float-left">User Groups</span>
+              <span class="float-right">
+                <i class="fa fa-angle-right"></i>
+              </span>
+            </a>
 			</div>
 		</div>
 
-		<div class="col-xs-12 col-md-6 col-lg-3">
-			<div class="panel panel-teal panel-widget ">
-				<div class="row no-padding">
-					<div class="col-sm-3 col-lg-5 widget-left">
-						<i class='glyphicon glyphicon-user' style='font-size:38px'></i>
-					</div>
-					<div class="col-sm-9 col-lg-7 widget-right">
-						<div class="large"><?=$onlineAccounts?></div>
-						<div class="text-muted">Online Members</div>
-					</div>
-				</div>
+		<div class="col-xs-12 col-md-6 col-lg-3 mb-3">
+			<div class="card text-white bg-success o-hidden h-100">
+            <div class="card-body">
+              <div class="card-body-icon">
+                <i class="fa fa-fw fa-user"></i>
+              </div>
+              <div class="mr-5"><?=$onlineAccounts?></div>
+            </div>
+            <a class="card-footer text-white clearfix small z-1" href="#">
+              <span class="float-left">Online Members</span>
+              <span class="float-right">
+                <i class="fa fa-angle-right"></i>
+              </span>
+            </a>
 			</div>
 		</div>
 
-		<div class="col-xs-12 col-md-6 col-lg-3">
-			<div class="panel panel-red panel-widget ">
-				<div class="row no-padding">
-					<div class="col-sm-3 col-lg-5 widget-left">
-						<i class='glyphicon glyphicon-road' style='font-size:38px'></i>
-					</div>
-					<div class="col-sm-9 col-lg-7 widget-right">
-						<div class="large"><?=$totalPageViews?></div>
-						<div class="text-muted">Page Views</div>
-					</div>
-				</div>
+		<div class="col-xs-12 col-md-6 col-lg-3 mb-3">
+			<div class="card text-white bg-danger o-hidden h-100">
+            <div class="card-body">
+              <div class="card-body-icon">
+                <i class="fa fa-fw fa-road"></i>
+              </div>
+              <div class="mr-5"><?=$totalPageViews?></div>
+            </div>
+            <a class="card-footer text-white clearfix small z-1" href="#">
+              <span class="float-left">Page Views</span>
+              <span class="float-right">
+                <i class="fa fa-angle-right"></i>
+              </span>
+            </a>
 			</div>
 		</div>
 	</div>
 
 	<div class="row">
 		<div class="col-lg-12">
-			<div class="panel panel-default">
-				<div class="panel-heading">Site Traffic Overview<span class='pull-right'><small><font color='#30a4ff'>Current Year</font> <font color='#dcdcdc'>Previous Year</font></small></span></div>
-				<div class="panel-body">
+			<div class="card mb-3">
+				<div class="card-header h4">Site Traffic Overview<span class='pull-right'><small><font color='#30a4ff'>Current Year</font> <font color='#dcdcdc'>Previous Year</font></small></span></div>
+				<div class="card-body">
 					<div class="canvas-wrapper">
 						<canvas class="main-chart" id="line-chart" height="200" width="600"></canvas>
 					</div>
@@ -109,11 +121,11 @@ if(isset($cur_uap_version) || isset($cur_uap_messages_version) || isset($cur_uap
 
 	<div class="row">
 		<div class='col-lg-6 col-md-6'>
-			<div class='panel panel-default'>
-				<div class='panel-heading'>
+			<div class='card mb-3'>
+				<div class='card-header h4'>
 					Users Signed Up Stats
 				</div>
-				<ul class='list-group'>
+				<ul class='list-group list-group-flush'>
 						<li class='list-group-item'><span class='pull-left'>Past Day:</span><span class='pull-right'><?=$mem_signup_past_1?></span><div class='clearfix'></div></li>
 						<li class='list-group-item'><span class='pull-left'>Past Week:</span><span class='pull-right'><?=$mem_signup_past_7?></span><div class='clearfix'></div></li>
 						<li class='list-group-item'><span class='pull-left'>Past 30 Days:</span><span class='pull-right'><?=$mem_signup_past_30?></span><div class='clearfix'></div></li>
@@ -124,11 +136,11 @@ if(isset($cur_uap_version) || isset($cur_uap_messages_version) || isset($cur_uap
 		</div>
 
 		<div class='col-lg-6 col-md-6'>
-			<div class='panel panel-default'>
-				<div class='panel-heading'>
+			<div class='card mb-3'>
+				<div class='card-header h4'>
 					Users Logged In Stats
 				</div>
-				<ul class='list-group'>
+				<ul class='list-group list-group-flush'>
 						<li class='list-group-item'><span class='pull-left'>Past Day:</span><span class='pull-right'><?=$mem_login_past_1?></span><div class='clearfix'></div></li>
 						<li class='list-group-item'><span class='pull-left'>Past Week:</span><span class='pull-right'><?=$mem_login_past_7?></span><div class='clearfix'></div></li>
 						<li class='list-group-item'><span class='pull-left'>Past 30 Days:</span><span class='pull-right'><?=$mem_login_past_30?></span><div class='clearfix'></div></li>
@@ -139,11 +151,11 @@ if(isset($cur_uap_version) || isset($cur_uap_messages_version) || isset($cur_uap
 		</div>
 
 		<div class='col-lg-12 col-md-12'>
-			<div class='panel panel-default'>
-				<div class='panel-heading'>
+			<div class='card mb-3'>
+				<div class='card-header h4'>
 					Installed Plugins
 				</div>
-				<ul class='list-group'>
+				<ul class='list-group list-group-flush'>
 						<li class='list-group-item'><span class='pull-left'>Forum Plugin:</span><span class='pull-right'><?=$apd_plugin_forum?></span><div class='clearfix'></div></li>
 						<li class='list-group-item'><span class='pull-left'>Private Messages Plugin:</span><span class='pull-right'><?=$apd_plugin_message?></span><div class='clearfix'></div></li>
 						<li class='list-group-item'><span class='pull-left'>Friends Plugin:</span><span class='pull-right'><?=$apd_plugin_friends?></span><div class='clearfix'></div></li>

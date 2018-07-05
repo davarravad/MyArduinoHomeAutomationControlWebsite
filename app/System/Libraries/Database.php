@@ -4,7 +4,7 @@
 *
 * UserApplePie
 * @author David (DaVaR) Sargent <davar@userapplepie.com>
-* @version 4.0.0
+* @version 4.2.1
 */
 
 namespace Libs;
@@ -98,6 +98,31 @@ class Database extends \PDO {
         }
     }
     /**
+     * method for selecting records from a database
+     * @param  string $sql       sql query
+     * @param  array  $array     named params
+     * @param  object $fetchMode
+     * @param  string $class     class name
+     * @return int            returns row count
+     */
+    public function selectCount($sql, $array = array(), $fetchMode = \PDO::FETCH_OBJ, $class = '')
+    {
+        $stmt = $this->prepare($sql);
+        foreach ($array as $key => $value) {
+            if (is_int($value)) {
+                $stmt->bindValue("$key", $value, \PDO::PARAM_INT);
+            } else {
+                $stmt->bindValue("$key", $value);
+            }
+        }
+        $stmt->execute();
+        if ($fetchMode === \PDO::FETCH_CLASS) {
+            return $stmt->rowCount();
+        } else {
+            return $stmt->rowCount();
+        }
+    }
+    /**
      * insert method
      * @param  string $table table name
      * @param  array $data  array of columns and values
@@ -149,7 +174,7 @@ class Database extends \PDO {
         $stmt->execute();
         return $stmt->rowCount();
     }
-
+	
     /**
      * update where not method
      * @param  string $table table name
@@ -199,7 +224,7 @@ class Database extends \PDO {
         $stmt->execute();
         return $stmt->rowCount();
     }
-
+	
     /**
      * Delete method
      *

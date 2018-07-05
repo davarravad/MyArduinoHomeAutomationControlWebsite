@@ -4,7 +4,7 @@
 *
 * UserApplePie
 * @author David (DaVaR) Sargent <davar@userapplepie.com>
-* @version 4.0.0
+* @version 4.2.1
 */
 
 namespace Libs;
@@ -24,7 +24,7 @@ class CurrentUserData
 				SELECT
 					u.userID,
 					u.username,
-					u.first_name,
+					u.firstName,
 					u.gender,
 					u.userImage,
 					u.email,
@@ -33,7 +33,7 @@ class CurrentUserData
 					u.website,
 					u.aboutme
 				FROM
-					oauth_users u
+					".PREFIX."users u
 				WHERE
 					u.userID = :userID
 				",
@@ -81,7 +81,7 @@ class CurrentUserData
      */
     public static function getUserName($where_id){
     self::$db = Database::get();
-    	$data = self::$db->select("SELECT username FROM oauth_users WHERE userID = :userID",
+    	$data = self::$db->select("SELECT username FROM ".PREFIX."users WHERE userID = :userID",
     		array(':userID' => $where_id));
         (isset($data[0]->username)) ? $username = $data[0]->username : $username = "Guest";
     	return $username;
@@ -118,7 +118,7 @@ class CurrentUserData
 	 */
 	public static function getUserImage($where_id){
     self::$db = Database::get();
-		$data = self::$db->select("SELECT userImage FROM oauth_users WHERE userID = :userID",
+		$data = self::$db->select("SELECT userImage FROM ".PREFIX."users WHERE userID = :userID",
 			array(':userID' => $where_id));
         (isset($data[0]->userImage)) ? $userImage = $data[0]->userImage : $userImage = "";
 		return $userImage;
@@ -129,7 +129,7 @@ class CurrentUserData
 	 */
 	public static function getSignUp($where_id){
     self::$db = Database::get();
-		$data = self::$db->select("SELECT SignUp FROM oauth_users WHERE userID = :userID",
+		$data = self::$db->select("SELECT SignUp FROM ".PREFIX."users WHERE userID = :userID",
 			array(':userID' => $where_id));
         (isset($data[0]->SignUp)) ? $SignUp = date("F d, Y",strtotime($data[0]->SignUp)) : $SignUp = "";
 		return $SignUp;
@@ -140,7 +140,7 @@ class CurrentUserData
 	 */
 	public static function getUserSignature($where_id){
     self::$db = Database::get();
-		$data = self::$db->select("SELECT signature FROM oauth_users WHERE userID = :userID",
+		$data = self::$db->select("SELECT signature FROM ".PREFIX."users WHERE userID = :userID",
 			array(':userID' => $where_id));
         (isset($data[0]->signature)) ? $signature_data = BBCode::getHtml($data[0]->signature) : $signature_data = "";
     return $signature_data;
@@ -188,7 +188,7 @@ class CurrentUserData
       SELECT
         u.userID,
         u.username,
-        u.first_name,
+        u.firstName,
         u.isactive,
         ug.userID,
         ug.groupID,
@@ -197,7 +197,7 @@ class CurrentUserData
         g.groupFontColor,
         g.groupFontWeight
       FROM
-        oauth_users u
+        ".PREFIX."users u
       LEFT JOIN
         ".PREFIX."users_groups ug
         ON u.userID = ug.userID
@@ -223,7 +223,7 @@ class CurrentUserData
       SELECT
         u.userID,
         u.username,
-        u.first_name,
+        u.firstName,
         uo.userID,
         ug.userID,
         ug.groupID,
@@ -234,7 +234,7 @@ class CurrentUserData
       FROM
         ".PREFIX."users_online uo
       LEFT JOIN
-        oauth_users u
+        ".PREFIX."users u
         ON u.userID = uo.userID
       LEFT JOIN
         ".PREFIX."users_groups ug

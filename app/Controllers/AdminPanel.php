@@ -4,7 +4,7 @@
  *
  * UserApplePie
  * @author David (DaVaR) Sargent <davar@userapplepie.com>
- * @version 4.0.0
+ * @version 4.2.1
  */
 
 namespace App\Controllers;
@@ -131,8 +131,8 @@ class AdminPanel extends Controller{
 
     // Setup Breadcrumbs
     $data['breadcrumbs'] = "
-      <li><a href='".DIR."AdminPanel'><i class='fa fa-fw fa-cog'></i> Admin Panel</a></li>
-      <li class='active'><i class='fa fa-fw fa-dashboard'></i> ".$data['title']."</li>
+      <li class='breadcrumb-item'><a href='".DIR."AdminPanel'><i class='fa fa-fw fa-cog'></i> Admin Panel</a></li>
+      <li class='breadcrumb-item active'><i class='fa fa-fw fa-dashboard'></i> ".$data['title']."</li>
     ";
 
     /** Check to see if user is logged in **/
@@ -149,7 +149,7 @@ class AdminPanel extends Controller{
       \Libs\ErrorMessages::push('You are Not Logged In', 'Login');
     }
 
-    Load::View("AdminPanel/AdminPanel", $data, "AdminPanel::AP-Sidebar::Left", "AdminPanel");
+    Load::View("AdminPanel/AdminPanel", $data, "", "AdminPanel");
   }
 
     /*
@@ -196,7 +196,7 @@ class AdminPanel extends Controller{
                     $site_email_site = Request::post('site_email_site');
                     $site_recapcha_public = Request::post('site_recapcha_public');
                     $site_recapcha_private = Request::post('site_recapcha_private');
-                    $site_user_invite_code = Request::post('site_user_invite_code');
+                    $site_theme = Request::post('site_theme');
 
                     if($this->model->updateSetting('site_title', $site_title)){}else{ $errors[] = 'Site Title Error'; }
                     if($this->model->updateSetting('site_description', $site_description)){}else{ $errors[] = 'Site Description Error'; }
@@ -211,10 +211,10 @@ class AdminPanel extends Controller{
                     if($this->model->updateSetting('site_email_site', $site_email_site)){}else{ $errors[] = 'Site Email Error'; }
                     if($this->model->updateSetting('site_recapcha_public', $site_recapcha_public)){}else{ $errors[] = 'Site reCAPCHA Public Error'; }
                     if($this->model->updateSetting('site_recapcha_private', $site_recapcha_private)){}else{ $errors[] = 'Site reCAPCHA Private Error'; }
-                    if($this->model->updateSetting('site_user_invite_code', $site_user_invite_code)){}else{ $errors[] = 'Site Invite Code Error'; }
+                    if($this->model->updateSetting('site_theme', $site_theme)){}else{ $errors[] = 'Site Theme Error'; }
 
                     // Run the update profile script
-                    if(count($errors) == 0){
+                    if(!isset($errors) || count($errors) == 0){
                         // Success
                         \Libs\SuccessMessages::push('You Have Successfully Updated Site Settings', 'AdminPanel-Settings');
                     }else{
@@ -254,18 +254,18 @@ class AdminPanel extends Controller{
         $data['site_email_site'] = $this->model->getSettings('site_email_site');
         $data['site_recapcha_public'] = $this->model->getSettings('site_recapcha_public');
         $data['site_recapcha_private'] = $this->model->getSettings('site_recapcha_private');
-        $data['site_user_invite_code'] = $this->model->getSettings('site_user_invite_code');
+        $data['site_theme'] = $this->model->getSettings('site_theme');
 
         /* Setup Token for Form */
         $data['csrfToken'] = Csrf::makeToken('settings');
 
         /* Setup Breadcrumbs */
         $data['breadcrumbs'] = "
-          <li><a href='".DIR."AdminPanel'><i class='fa fa-fw fa-cog'></i> Admin Panel</a></li>
-          <li class='active'><i class='fa fa-fw fa-dashboard'></i> ".$data['title']."</li>
+          <li class='breadcrumb-item'><a href='".DIR."AdminPanel'><i class='fa fa-fw fa-cog'></i> Admin Panel</a></li>
+          <li class='breadcrumb-item active'><i class='fa fa-fw fa-dashboard'></i> ".$data['title']."</li>
         ";
 
-        Load::View("AdminPanel/Settings", $data, "AdminPanel::AP-Sidebar::Left", "AdminPanel");
+        Load::View("AdminPanel/Settings", $data, "", "AdminPanel");
     }
 
 
@@ -292,8 +292,8 @@ class AdminPanel extends Controller{
 
     // Setup Breadcrumbs
     $data['breadcrumbs'] = "
-      <li><a href='".DIR."AdminPanel'><i class='fa fa-fw fa-cog'></i> Admin Panel</a></li>
-      <li class='active'><i class='fa fa-fw fa-user'></i>".$data['title']."</li>
+      <li class='breadcrumb-item'><a href='".DIR."AdminPanel'><i class='fa fa-fw fa-cog'></i> Admin Panel</a></li>
+      <li class='breadcrumb-item active'><i class='fa fa-fw fa-user'></i>".$data['title']."</li>
     ";
 
     /** Check to see if user is logged in **/
@@ -310,7 +310,7 @@ class AdminPanel extends Controller{
       \Libs\ErrorMessages::push('You are Not Logged In', 'Login');
     }
 
-    Load::View("AdminPanel/Users", $data, "AdminPanel::AP-Sidebar::Left", "AdminPanel");
+    Load::View("AdminPanel/Users", $data, "", "AdminPanel");
   }
 
   public function User($id){
@@ -451,9 +451,9 @@ class AdminPanel extends Controller{
 
     // Setup Breadcrumbs
     $data['breadcrumbs'] = "
-      <li><a href='".DIR."AdminPanel'><i class='fa fa-fw fa-cog'></i> Admin Panel</a></li>
-      <li><a href='".DIR."AdminPanel-Users'><i class='fa fa-fw fa-user'></i> Users </a></li>
-      <li class='active'><i class='fa fa-fw fa-user'></i>User - ".$data['user_data'][0]->username."</li>
+      <li class='breadcrumb-item'><a href='".DIR."AdminPanel'><i class='fa fa-fw fa-cog'></i> Admin Panel</a></li>
+      <li class='breadcrumb-item'><a href='".DIR."AdminPanel-Users'><i class='fa fa-fw fa-user'></i> Users </a></li>
+      <li class='breadcrumb-item active'><i class='fa fa-fw fa-user'></i>User - ".$data['user_data'][0]->username."</li>
     ";
 
     /** Check to see if user is logged in **/
@@ -470,7 +470,7 @@ class AdminPanel extends Controller{
       \Libs\ErrorMessages::push('You are Not Logged In', 'Login');
     }
 
-    Load::View("AdminPanel/User", $data, "AdminPanel::AP-Sidebar::Left", "AdminPanel");
+    Load::View("AdminPanel/User", $data, "", "AdminPanel");
   }
 
   // Setup Groups Page
@@ -488,8 +488,8 @@ class AdminPanel extends Controller{
 
     // Setup Breadcrumbs
     $data['breadcrumbs'] = "
-      <li><a href='".DIR."AdminPanel'><i class='fa fa-fw fa-cog'></i> Admin Panel</a></li>
-      <li class='active'><i class='fa fa-fw fa-user'></i>".$data['title']."</li>
+      <li class='breadcrumb-item'><a href='".DIR."AdminPanel'><i class='fa fa-fw fa-cog'></i> Admin Panel</a></li>
+      <li class='breadcrumb-item active'><i class='fa fa-fw fa-group'></i> ".$data['title']."</li>
     ";
 
     // Check to make sure admin is trying to create group
@@ -532,7 +532,7 @@ class AdminPanel extends Controller{
       \Libs\ErrorMessages::push('You are Not Logged In', 'Login');
     }
 
-    Load::View("AdminPanel/Groups", $data, "AdminPanel::AP-Sidebar::Left", "AdminPanel");
+    Load::View("AdminPanel/Groups", $data, "", "AdminPanel");
   }
 
   // Setup Group Page
@@ -627,9 +627,9 @@ class AdminPanel extends Controller{
 
     // Setup Breadcrumbs
     $data['breadcrumbs'] = "
-      <li><a href='".DIR."AdminPanel'><i class='fa fa-fw fa-cog'></i> Admin Panel</a></li>
-      <li><a href='".DIR."AdminPanel-Groups'><i class='fa fa-fw fa-user'></i> Groups </a></li>
-      <li class='active'><i class='fa fa-fw fa-user'></i>Group - ".$data['g_groupName']."</li>
+      <li class='breadcrumb-item'><a href='".DIR."AdminPanel'><i class='fa fa-fw fa-cog'></i> Admin Panel</a></li>
+      <li class='breadcrumb-item'><a href='".DIR."AdminPanel-Groups'><i class='fa fa-fw fa-group'></i> Groups </a></li>
+      <li class='breadcrumb-item active'><i class='fa fa-fw fa-group'></i> Group - ".$data['g_groupName']."</li>
     ";
 
     /** Check to see if user is logged in **/
@@ -646,7 +646,7 @@ class AdminPanel extends Controller{
       \Libs\ErrorMessages::push('You are Not Logged In', 'Login');
     }
 
-    Load::View("AdminPanel/Group", $data, "AdminPanel::AP-Sidebar::Left", "AdminPanel");
+    Load::View("AdminPanel/Group", $data, "", "AdminPanel");
   }
 
   /**
@@ -678,8 +678,8 @@ class AdminPanel extends Controller{
 
     // Setup Breadcrumbs
     $data['breadcrumbs'] = "
-      <li><a href='".DIR."AdminPanel'><i class='fa fa-fw fa-cog'></i> Admin Panel</a></li>
-      <li class='active'><i class='fa fa-fw fa-user'></i>".$data['title']."</li>
+      <li class='breadcrumb-item'><a href='".DIR."AdminPanel'><i class='fa fa-fw fa-cog'></i> Admin Panel</a></li>
+      <li class='breadcrumb-item active'><i class='fa fa-fw fa-user'></i>".$data['title']."</li>
     ";
 
     (isset($_SESSION['subject'])) ? $data['subject'] = $_SESSION['subject'] : $data['subject'] = "";
@@ -724,7 +724,7 @@ class AdminPanel extends Controller{
       }
     }
 
-    Load::View("AdminPanel/MassEmail", $data, "AdminPanel::AP-Sidebar::Left", "AdminPanel");
+    Load::View("AdminPanel/MassEmail", $data, "", "AdminPanel");
   }
 
     /**
@@ -755,8 +755,8 @@ class AdminPanel extends Controller{
 
         /** Setup Breadcrumbs **/
         $data['breadcrumbs'] = "
-          <li><a href='".DIR."AdminPanel'><i class='fa fa-fw fa-cog'></i> Admin Panel</a></li>
-          <li class='active'><i class='fa fa-fw fa-user'></i>".$data['title']."</li>
+          <li class='breadcrumb-item'><a href='".DIR."AdminPanel'><i class='fa fa-fw fa-cog'></i> Admin Panel</a></li>
+          <li class='breadcrumb-item active'><i class='fa fa-fw fa-user'></i>".$data['title']."</li>
         ";
 
 
@@ -766,7 +766,7 @@ class AdminPanel extends Controller{
             /** Get Core Routes **/
             $core_routes = Routes::all();
             foreach ($core_routes as $cr) {
-                if($class == $cr[controller] && $method == $cr[method]){
+                if($class == $cr['controller'] && $method == $cr['method']){
                     $match[] = true;
                 }
             }
@@ -881,7 +881,7 @@ class AdminPanel extends Controller{
         $data['system_routes'] = $this->model->getAllRoutes();
 
         /** Load The View **/
-        Load::View("AdminPanel/SystemRoutes", $data, "AdminPanel::AP-Sidebar::Left", "AdminPanel");
+        Load::View("AdminPanel/SystemRoutes", $data, "", "AdminPanel");
 
     }
 
@@ -914,8 +914,8 @@ class AdminPanel extends Controller{
 
         /** Setup Breadcrumbs **/
         $data['breadcrumbs'] = "
-          <li><a href='".DIR."AdminPanel'><i class='fa fa-fw fa-cog'></i> Admin Panel</a></li>
-          <li class='active'><i class='fa fa-fw fa-user'></i>".$data['title']."</li>
+          <li class='breadcrumb-item'><a href='".DIR."AdminPanel'><i class='fa fa-fw fa-cog'></i> Admin Panel</a></li>
+          <li class='breadcrumb-item active'><i class='fa fa-fw fa-user'></i>".$data['title']."</li>
         ";
 
         /** Check to see if Admin is updating System Route **/
@@ -964,7 +964,7 @@ class AdminPanel extends Controller{
         $data['system_route'] = $this->model->getRoute($id);
 
         /** Load The View **/
-        Load::View("AdminPanel/SystemRoute", $data, "AdminPanel::AP-Sidebar::Left", "AdminPanel");
+        Load::View("AdminPanel/SystemRoute", $data, "", "AdminPanel");
 
     }
 }

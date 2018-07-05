@@ -4,7 +4,7 @@
  *
  * UserApplePie
  * @author David (DaVaR) Sargent <davar@userapplepie.com>
- * @version 4.0.0
+ * @version 4.2.1
  */
 
  namespace App\Models;
@@ -63,7 +63,7 @@ class Users extends Models
      */
     public function getUserID($where_username)
     {
-        $data = $this->db->select("SELECT userID FROM oauth_users WHERE username = :username",
+        $data = $this->db->select("SELECT userID FROM ".PREFIX."users WHERE username = :username",
             array(':username' => $where_username));
         return $data[0]->userID;
     }
@@ -101,7 +101,7 @@ class Users extends Models
      * Get current user's username from database
      */
     public function getUserName($where_id){
-      $data = $this->db->select("SELECT username FROM oauth_users WHERE userID = :userID",
+      $data = $this->db->select("SELECT username FROM ".PREFIX."users WHERE userID = :userID",
         array(':userID' => $where_id));
       return $data[0]->username;
     }
@@ -110,7 +110,7 @@ class Users extends Models
      * Get current user's Email from database
      */
     public function getUserEmail($where_id){
-      $data = $this->db->select("SELECT email FROM oauth_users WHERE userID = :userID",
+      $data = $this->db->select("SELECT email FROM ".PREFIX."users WHERE userID = :userID",
         array(':userID' => $where_id));
       return $data[0]->email;
     }
@@ -119,7 +119,7 @@ class Users extends Models
      * Get current user's Last Login Date from database
      */
     public function getUserLastLogin($where_id){
-      $data = $this->db->select("SELECT LastLogin FROM oauth_users WHERE userID = :userID",
+      $data = $this->db->select("SELECT LastLogin FROM ".PREFIX."users WHERE userID = :userID",
         array(':userID' => $where_id));
       return $data[0]->LastLogin;
     }
@@ -128,7 +128,7 @@ class Users extends Models
      * Get current user's Sign Up Date from database
      */
     public function getUserSignUp($where_id){
-      $data = $this->db->select("SELECT SignUp FROM oauth_users WHERE userID = :userID",
+      $data = $this->db->select("SELECT SignUp FROM ".PREFIX."users WHERE userID = :userID",
         array(':userID' => $where_id));
       return $data[0]->SignUp;
     }
@@ -141,7 +141,6 @@ class Users extends Models
       $data = $this->db->select("SELECT groupID FROM ".PREFIX."users_groups WHERE userID = :userID ORDER BY groupID ASC",
         array(':userID' => $where_id));
       //$groupID = $data[0]->groupID;
-	  $groupOutput = array();
       foreach($data as $row){
         // Use group ID to get the group name
         $data2 = $this->db->select("SELECT groupName, groupFontColor, groupFontWeight FROM ".PREFIX."groups WHERE groupID = :groupID",
@@ -162,8 +161,8 @@ class Users extends Models
           SELECT
             u.userID,
             u.username,
-            u.first_name,
-            u.last_name,
+            u.firstName,
+            u.lastName,
             u.isactive,
             ug.userID,
             ug.groupID,
@@ -172,7 +171,7 @@ class Users extends Models
             g.groupFontColor,
             g.groupFontWeight
           FROM
-            oauth_users u
+            ".PREFIX."users u
           LEFT JOIN
             ".PREFIX."users_groups ug
             ON u.userID = ug.userID
@@ -199,8 +198,8 @@ class Users extends Models
         SELECT
           u.userID,
           u.username,
-          u.first_name,
-          u.last_name,
+          u.firstName,
+          u.lastName,
           u.userImage,
           u.email,
           u.privacy_massemail,
@@ -212,7 +211,7 @@ class Users extends Models
           g.groupFontColor,
           g.groupFontWeight
         FROM
-          oauth_users u
+          ".PREFIX."users u
         LEFT JOIN
           ".PREFIX."users_groups ug
           ON u.userID = ug.userID
@@ -248,7 +247,6 @@ class Users extends Models
           ug.userID ASC
       ",
         array(':userID' => $userID));
-	  $cu_groupID = array();
       foreach($current_user_groups as $user_group_data){
         $cu_groupID[] = $user_group_data->groupID;
       }

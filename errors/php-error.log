@@ -1,0 +1,46 @@
+Exception information:
+
+           Date: Jun 30, 2018 9:04AM
+
+           Message: SQLSTATE[08S01]: Communication link failure: 1053 Server shutdown in progress
+
+           Code: 08S01
+
+           File: /var/www/websites/shc.myarduinohome.com/app/System/Libraries/Database.php
+
+           Line: 93
+
+           Stack trace:
+
+           #0 /var/www/websites/shc.myarduinohome.com/app/System/Libraries/Database.php(93): PDOStatement->execute()
+#1 /var/www/websites/shc.myarduinohome.com/app/Models/AdminPanel.php(27): Libs\Database->select('\n            SE...', Array)
+#2 /var/www/websites/shc.myarduinohome.com/app/System/LoadSiteSettings.php(107): App\Models\AdminPanel->getSettings('site_theme')
+#3 /var/www/websites/shc.myarduinohome.com/localsite/database.php(41): App\System\LoadSiteSettings->__construct()
+#4 /var/www/websites/shc.myarduinohome.com/localsite/temps.php(14): require_once('/var/www/websit...')
+#5 {main}
+
+           ---------
+
+Exception information:
+
+           Date: Jun 30, 2018 9:04AM
+
+           Message: SQLSTATE[08S01]: Communication link failure: 1053 Server shutdown in progress
+
+           Code: 08S01
+
+           File: /var/www/websites/shc.myarduinohome.com/app/System/Libraries/Database.php
+
+           Line: 93
+
+           Stack trace:
+
+           #0 /var/www/websites/shc.myarduinohome.com/app/System/Libraries/Database.php(93): PDOStatement->execute()
+#1 /var/www/websites/shc.myarduinohome.com/app/Models/AdminPanel.php(27): Libs\Database->select('\n            SE...', Array)
+#2 /var/www/websites/shc.myarduinohome.com/app/System/LoadSiteSettings.php(46): App\Models\AdminPanel->getSettings('site_email_user...')
+#3 /var/www/websites/shc.myarduinohome.com/localsite/database.php(41): App\System\LoadSiteSettings->__construct()
+#4 /var/www/websites/shc.myarduinohome.com/localsite/lightswitch.php(14): require_once('/var/www/websit...')
+#5 {main}
+
+           ---------
+

@@ -4,7 +4,7 @@
 *
 * UserApplePie
 * @author David (DaVaR) Sargent <davar@userapplepie.com>
-* @version 4.0.0
+* @version 4.2.1
 */
 
 namespace App\System;
@@ -35,7 +35,7 @@ class Load {
         if(!empty($sidebarFile)){
             $sidebarFileCheck = explode(".", $sidebarFile);
             $esbfc = explode("/", str_replace("::", "/", $sidebarFile));
-            $sidebarLocation = $esbfc[2];
+            $sidebarLocation = end($esbfc);
             $sidebarFile = str_replace($sidebarLocation, "", $sidebarFile);
             $sidebarFile = rtrim(rtrim($sidebarFile,'/'),'::');
             if(!isset($sidebarFileCheck[1])){

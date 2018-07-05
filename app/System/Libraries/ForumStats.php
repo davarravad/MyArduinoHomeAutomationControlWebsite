@@ -4,7 +4,7 @@
 *
 * UserApplePie
 * @author David (DaVaR) Sargent <davar@userapplepie.com>
-* @version 4.0.0
+* @version 4.2.1
 */
 
 namespace Libs;
@@ -242,6 +242,57 @@ class ForumStats
                 return true;
             }
         }
+    }
+
+
+    /**
+     * forum_top_posts
+     *
+     * get list of top posts in forum ordered by views.
+     *
+     * @return array returns top forum posts
+     */
+    public static function forum_top_posts($limit = "5"){
+        self::$db = Database::get();
+        $data = self::$db->select("
+          SELECT count(*) as total_views,
+              fp.forum_title as forum_title,
+              fp.forum_post_id as forum_post_id
+          FROM ".PREFIX."views v
+          LEFT JOIN ".PREFIX."forum_posts fp
+          ON v.view_id = fp.forum_post_id
+          WHERE v.view_location = 'Forum_Topic'
+          GROUP BY v.view_id
+          ORDER BY total_views DESC
+          LIMIT $limit
+        ");
+        return $data;
+    }
+
+
+    /**
+     * forum_top_sweets_posts
+     *
+     * get list of top posts in forum ordered by views.
+     *
+     * @return array returns top forum posts
+     */
+    public static function forum_top_sweets_posts($limit = "5"){
+        self::$db = Database::get();
+        $data = self::$db->select("
+          SELECT count(*) as total_sweets,
+              fp.forum_title as forum_title,
+              fp.forum_post_id as forum_post_id
+          FROM ".PREFIX."sweets s
+          LEFT JOIN ".PREFIX."forum_posts fp
+          ON s.sweet_id = fp.forum_post_id
+          WHERE s.sweet_location = 'Forum_Topic'
+          OR s.sweet_location = 'Forum_Topic_Reply'
+          GROUP BY s.sweet_id
+          ORDER BY total_sweets DESC
+          LIMIT $limit
+        ");
+        return $data;
     }
 
 }

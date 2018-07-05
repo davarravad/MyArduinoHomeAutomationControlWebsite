@@ -4,7 +4,7 @@
  *
  * UserApplePie
  * @author David (DaVaR) Sargent <davar@userapplepie.com>
- * @version 4.0.0
+ * @version 4.2.1
  */
 
 namespace App\Models;
@@ -25,7 +25,7 @@ class Auth extends Models
      */
     public function getAccountInfo($username)
     {
-        return $this->db->select("SELECT * FROM oauth_users WHERE username=:username", array(":username" => $username));
+        return $this->db->select("SELECT * FROM ".PREFIX."users WHERE username=:username", array(":username" => $username));
     }
 
     /**
@@ -35,7 +35,7 @@ class Auth extends Models
      */
     public function getAccountInfoEmail($email)
     {
-        return $this->db->select("SELECT * FROM oauth_users WHERE email=:email", array(":email" => $email));
+        return $this->db->select("SELECT * FROM ".PREFIX."users WHERE email=:email", array(":email" => $email));
     }
 
     /**
@@ -105,7 +105,7 @@ class Auth extends Models
      */
     public function addIntoDB($table,$info)
     {
-        return $this->db->insert($table,$info);
+        return $this->db->insert(PREFIX.$table,$info);
     }
 
     /**
@@ -117,7 +117,7 @@ class Auth extends Models
      */
     public function updateInDB($table,$info,$where)
     {
-        return $this->db->update($table,$info,$where);
+        return $this->db->update(PREFIX.$table,$info,$where);
     }
 
     /**
@@ -127,7 +127,7 @@ class Auth extends Models
      */
     public function getUserID($username)
     {
-        return $this->db->select("SELECT userID FROM oauth_users WHERE username=:username", array(":username" => $username));
+        return $this->db->select("SELECT userID FROM ".PREFIX."users WHERE username=:username", array(":username" => $username));
     }
 
     /**

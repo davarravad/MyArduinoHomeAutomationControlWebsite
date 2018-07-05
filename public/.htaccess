@@ -11,8 +11,8 @@
 	#RewriteRule ^(.*)$ http://%1/$1 [R=301,L]
 
 	# Force ssl uncomment to activate
-	RewriteCond %{HTTPS} !on
-	RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+	#RewriteCond %{HTTPS} !on
+	#RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 
 	# Allow any files or directories that exist to be displayed directly
 	RewriteCond %{REQUEST_FILENAME} !-f

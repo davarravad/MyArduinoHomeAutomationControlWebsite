@@ -4,7 +4,7 @@
  *
  * UserApplePie
  * @author David (DaVaR) Sargent <davar@userapplepie.com>
- * @version 4.0.0
+ * @version 4.2.1
  */
 
 namespace App\Controllers;
@@ -24,77 +24,11 @@ use App\System\Controller,
 
 class Auth extends Controller
 {
-    private $storage;
-    private $server;
 
     public function __construct()
     {
         parent::__construct();
         $this->language->load('Auth');
-
-        // Autoloading (composer is preferred, but for this example let's just do this)
-        \OAuth2\Autoloader::register();
-
-        // $dsn is the Data Source Name for your database, for exmaple "mysql:dbname=my_oauth2_db;host=localhost"
-        $this->storage = new \OAuth2\Storage\Pdo(array('dsn' => 'mysql:dbname='.DB_NAME.';host='.DB_HOST, 'username' => DB_USER, 'password' => DB_PASS));
-
-        // Pass a storage object or array of storage objects to the OAuth2 server class
-        $this->server = new \OAuth2\Server($this->storage);
-
-        // Add the "Client Credentials" grant type (it is the simplest of the grant types)
-        $this->server->addGrantType(new \OAuth2\GrantType\ClientCredentials($this->storage));
-
-        // Add the "Authorization Code" grant type (this is where the oauth magic happens)
-        $this->server->addGrantType(new \OAuth2\GrantType\AuthorizationCode($this->storage));
-
-    }
-
-    public function token()
-    {
-      // Handle a request for an OAuth2.0 Access Token and send the response to the client
-      $this->server->handleTokenRequest(\OAuth2\Request::createFromGlobals())->send();
-    }
-
-    public function resource()
-    {
-      // Handle a request to a resource and authenticate the access token
-      if (!$this->server->verifyResourceRequest(\OAuth2\Request::createFromGlobals())) {
-          $this->server->getResponse()->send();
-          die;
-      }
-      echo json_encode(array('success' => true, 'message' => 'You accessed my APIs!'));
-    }
-
-    public function authorize()
-    {
-      $request = \OAuth2\Request::createFromGlobals();
-      $response = new \OAuth2\Response();
-
-      // validate the authorize request
-      if (!$this->server->validateAuthorizeRequest($request, $response)) {
-          $response->send();
-          die;
-      }
-      // display an authorization form
-      if (empty($_POST)) {
-        exit('
-      <form method="post">
-        <label>Do You Authorize TestClient?</label><br />
-        <input type="submit" name="authorized" value="yes">
-        <input type="submit" name="authorized" value="no">
-      </form>');
-      }
-
-      // print the authorization code if the user has authorized your client
-      $is_authorized = ($_POST['authorized'] === 'yes');
-      $this->server->handleAuthorizeRequest($request, $response, $is_authorized);
-      if ($is_authorized) {
-        // this is only here so that you get to see your code in the cURL request. Otherwise, we'd redirect back to the client
-        $code = substr($response->getHttpHeader('Location'), strpos($response->getHttpHeader('Location'), 'code=')+5, 40);
-        exit("SUCCESS! Authorization Code: $code");
-      }
-      $response->send();
-
     }
 
     /**
@@ -114,7 +48,7 @@ class Auth extends Controller
             $rememberMe = null !=  Request::post('rememberMe');
 
             $email = $this->auth->checkIfEmail($username);
-            $username = count($email) != 0 ? $email[0]->username : $username;
+            $username = $email && (count($email) != 0 ) ? $email[0]->username : $username;
 
             if ($this->auth->login($username, $password, $rememberMe)) {
                 $userId = $this->auth->currentSessionInfo()['uid'];
@@ -172,7 +106,7 @@ class Auth extends Controller
 
         /** Setup Breadcrumbs **/
     		$data['breadcrumbs'] = "
-    			<li class='active'>".$data['title']."</li>
+    			<li class='breadcrumb-item active'>".$data['title']."</li>
         ";
 
         /** Check to see if user is logged in **/
@@ -234,17 +168,7 @@ class Auth extends Controller
                     $password = Request::post('password');
                     $verifypassword = Request::post('passwordc');
                     $email = Request::post('email');
-                    $invite = Request::post('invite');
 
-                    $data['invite_code'] = SITE_INVITE_CODE;
-
-                    if(!empty($data['invite_code'])){
-                      // Check to make sure invite code is correct
-                      if($invite != $data['invite_code']){
-                          // Error Message Display
-                          ErrorMessages::push('Invitation Code Is Not Correct!  Please Try Again!', 'Register');
-                      }
-                    }
                     // Get Account Activation Setting
                     $account_activation = ACCOUNT_ACTIVATION;
 
@@ -298,7 +222,7 @@ class Auth extends Controller
         /** Get lang Code **/
         $langeCode = \Libs\Language::setLang();
         /** Add JS Files requried for live checks **/
-    	$data['js'] = "<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js'></script>";
+    	  $data['js'] = "<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js'></script>";
         $data['js'] .= "<script type='text/javascript'>
                         var char_limit = {
                           username_min: '".MIN_USERNAME_LENGTH."',
@@ -310,18 +234,17 @@ class Auth extends Controller
                         };
                       </script>";
         $data['js'] .= "<script src='".Url::templatePath()."js/lang.".$langeCode.".js'></script>";
-    	$data['js'] .= "<script src='".Url::templatePath()."js/live_email.js'></script>";
-    	$data['js'] .= "<script src='".Url::templatePath()."js/live_username_check.js'></script>";
-    	$data['js'] .= "<script src='".Url::templatePath()."js/password_strength_match.js'></script>";
+      	$data['js'] .= "<script src='".Url::templatePath()."js/live_email.js'></script>";
+      	$data['js'] .= "<script src='".Url::templatePath()."js/live_username_check.js'></script>";
+      	$data['js'] .= "<script src='".Url::templatePath()."js/password_strength_match.js'></script>";
 
         /** Setup Breadcrumbs **/
     	$data['breadcrumbs'] = "
-    		<li class='active'>".$data['title']."</li>
+    		<li class='breadcrumb-item active'>".$data['title']."</li>
         ";
 
         /** Check to see if user is logged in **/
         $data['isLoggedIn'] = $this->auth->isLogged();
-        $data['invite_code'] = SITE_INVITE_CODE;
 
         Load::View("Members/Register", $data);
     }
@@ -350,7 +273,7 @@ class Auth extends Controller
 
         /** Setup Breadcrumbs **/
     		$data['breadcrumbs'] = "
-    			<li class='active'>".$data['title']."</li>
+    			<li class='breadcrumb-item active'>".$data['title']."</li>
         ";
 
 
@@ -402,9 +325,12 @@ class Auth extends Controller
 
         /** Setup Breadcrumbs **/
     		$data['breadcrumbs'] = "
-          <li><a href='".DIR."Account-Settings'>".$this->language->get('account_settings_title')."</a></li>
-    			<li class='active'>".$data['title']."</li>
+          <li class='breadcrumb-item'><a href='".DIR."Account-Settings'>".$this->language->get('account_settings_title')."</a></li>
+    			<li class='breadcrumb-item active'>".$data['title']."</li>
         ";
+
+        /** Get lang Code **/
+        $langeCode = \Libs\Language::setLang();
 
         /** Add JS Files requried for live checks **/
     		$data['js'] = "<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js'></script>";
@@ -414,11 +340,11 @@ class Auth extends Controller
                           password_max: '".MAX_PASSWORD_LENGTH."'
                         };
                       </script>";
-        $data['js'] .= "<script src='".Url::templatePath()."js/lang.".LANG_CODE.".js'></script>";
+        $data['js'] .= "<script src='".Url::templatePath()."js/lang.".$langeCode.".js'></script>";
     		$data['js'] .= "<script src='".Url::templatePath()."js/password_strength_match.js'></script>";
 
 
-        Load::View('Members/Change-Password', $data, 'Members/Member-Account-Sidebar::Left');
+        Load::View('Members/Change-Password', $data, 'Members/MAH-Member-Account-Sidebar::Left');
 
     }
 
@@ -467,9 +393,12 @@ class Auth extends Controller
 
         /** Setup Breadcrumbs **/
     		$data['breadcrumbs'] = "
-          <li><a href='".DIR."Account-Settings'>".$this->language->get('account_settings_title')."</a></li>
-    			<li class='active'>".$data['title']."</li>
+          <li class='breadcrumb-item'><a href='".DIR."Account-Settings'>".$this->language->get('account_settings_title')."</a></li>
+    			<li class='breadcrumb-item active'>".$data['title']."</li>
         ";
+
+        /** Get lang Code **/
+        $langeCode = \Libs\Language::setLang();
 
         /** Add JS Files requried for live checks **/
     		$data['js'] = "<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js'></script>";
@@ -479,10 +408,10 @@ class Auth extends Controller
                           email_max: '".MAX_EMAIL_LENGTH."'
                         };
                       </script>";
-        $data['js'] .= "<script src='".Url::templatePath()."js/lang.".LANG_CODE.".js'></script>";
+        $data['js'] .= "<script src='".Url::templatePath()."js/lang.".$langeCode.".js'></script>";
     		$data['js'] .= "<script src='".Url::templatePath()."js/live_email.js'></script>";
 
-        Load::View('Members/Change-Email', $data, 'Members/Member-Account-Sidebar::Left');
+        Load::View('Members/Change-Email', $data, 'Members/MAH-Member-Account-Sidebar::Left');
 
     }
 
@@ -518,7 +447,7 @@ class Auth extends Controller
 
         /** Setup Breadcrumbs **/
     		$data['breadcrumbs'] = "
-    			<li class='active'>".$data['title']."</li>
+    			<li class='breadcrumb-item active'>".$data['title']."</li>
         ";
 
 
@@ -568,7 +497,7 @@ class Auth extends Controller
 
         /** Setup Breadcrumbs **/
     		$data['breadcrumbs'] = "
-    			<li class='active'>".$data['title']."</li>
+    			<li class='breadcrumb-item active'>".$data['title']."</li>
         ";
 
 
@@ -606,7 +535,7 @@ class Auth extends Controller
 
         /** Setup Breadcrumbs **/
     		$data['breadcrumbs'] = "
-    			<li class='active'>".$data['title']."</li>
+    			<li class='breadcrumb-item active'>".$data['title']."</li>
         ";
 
 

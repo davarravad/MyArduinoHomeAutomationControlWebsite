@@ -4,17 +4,17 @@
 *
 * UserApplePie
 * @author David (DaVaR) Sargent <davar@userapplepie.com>
-* @version 4.0.0
+* @version 4.2.1
 */
 
 /* Define the absolute paths for configured directories */
 define('APPDIR', realpath(__DIR__.'/../app/').'/');
-define('SYSTEMDIR', realpath(__DIR__.'/../System/').'/');
+define('SYSTEMDIR', realpath(__DIR__.'/../system/').'/');
 define('PUBLICDIR', realpath(__DIR__).'/');
 define('ROOTDIR', realpath(__DIR__.'/../').'/');
 
 /** Define Current Version of UAP **/
-define('UAPVersion', '4.0.0');
+define('UAPVersion', '4.2.1');
 
 /* load Composer Autoloader */
 if (file_exists(ROOTDIR.'vendor/autoload.php')) {
@@ -30,7 +30,6 @@ if (file_exists(ROOTDIR.'vendor/autoload.php')) {
 session_start();
 
 /* Error Settings */
-ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 /* Make sure Config File Exists */

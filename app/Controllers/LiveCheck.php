@@ -4,7 +4,7 @@
  *
  * UserApplePie
  * @author David (DaVaR) Sargent <davar@userapplepie.com>
- * @version 4.0.0
+ * @version 4.2.1
  */
 
 namespace App\Controllers;
@@ -39,7 +39,7 @@ class LiveCheck extends Controller
 
 		if(isSet($email))
 		{
-			$query = $this->db->select('SELECT email FROM oauth_users WHERE email=:email',
+			$query = $this->db->select('SELECT email FROM '.PREFIX.'users WHERE email=:email',
 					array(':email' => $email));
 			$count = count($query);
 
@@ -75,7 +75,7 @@ class LiveCheck extends Controller
 
 		if(isSet($username))
 		{
-			$query = $this->db->select('SELECT username FROM oauth_users WHERE username=:username',
+			$query = $this->db->select('SELECT username FROM '.PREFIX.'users WHERE username=:username',
 					array(':username' => $username));
 			$count = count($query);
 

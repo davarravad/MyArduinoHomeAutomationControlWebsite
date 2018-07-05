@@ -1,36 +1,46 @@
-<?php 
+<?php
 /**
 * Account Change E-Mail View
 *
 * UserApplePie
 * @author David (DaVaR) Sargent <davar@userapplepie.com>
-* @version 4.0.0
+* @version 4.2.1
 */
 
 use Libs\Language, Libs\Form;
 ?>
 
-<div class="col-lg-8 col-md-8 col-sm-8">
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<h1><?=$title;?></h1>
+<div class="col-lg-8 col-md-8 col-sm-12">
+	<div class="card mb-3">
+		<div class="card-header h4">
+			<?=$title;?>
 		</div>
-		<div class="panel-body">
+		<div class="card-body">
 			<p><?=$welcomeMessage;?></p>
 			<?php echo Form::open(array('method' => 'post')); ?>
 
 				<!-- Current Password -->
-				<div class='input-group' style='width: 80%; margin-bottom: 25px'>
-					<span class='input-group-addon'><i class='glyphicon glyphicon-lock'></i></span>
-					<?php echo Form::input(array('type' => 'password', 'name' => 'passwordemail', 'class' => 'form-control', 'placeholder' => Language::show('current_password', 'Members'))); ?>
-				</div>
+					<div class='form-group'>
+						<div class='input-group mb-3'>
+							<div class='input-group-prepend'>
+								<span class='input-group-text'><i class='fas fa-lock'></i></span>
+							</div>
+							<?php echo Form::input(array('type' => 'password', 'name' => 'passwordemail', 'class' => 'form-control', 'placeholder' => Language::show('current_password', 'Members'))); ?>
+						</div>
+					</div>
 
 				<!-- Email -->
-				<div class='input-group' style='width: 80%; margin-bottom: 25px'>
-					<span class='input-group-addon'><i class='glyphicon glyphicon-envelope'></i></span>
-					<?php echo Form::input(array('id' => 'email', 'type' => 'text', 'name' => 'newemail', 'class' => 'form-control', 'placeholder' => $data['email'])); ?>
-					<span id='resultemail' class='input-group-addon'></span>
-				</div>
+					<div class='form-group'>
+						<div class='input-group mb-3'>
+							<div class='input-group-prepend'>
+								<span class='input-group-text'><i class='fas fa-envelope'></i></span>
+							</div>
+							<?php echo Form::input(array('id' => 'email', 'type' => 'text', 'name' => 'newemail', 'class' => 'form-control', 'placeholder' => $data['email'])); ?>
+							<div class='input-group-prepend'>
+								<span id='resultemail' class='input-group-text'></span>
+							</div>
+						</div>
+					</div>
 
 				<!-- Error Message Display -->
 				<span id='resultemail2' class='label'></span>
