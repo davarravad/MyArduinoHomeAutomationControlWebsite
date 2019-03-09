@@ -494,19 +494,18 @@ CREATE TABLE `uap4_routes` (
 
 INSERT INTO `uap4_routes` (`id`, `controller`, `method`, `url`, `arguments`, `enable`) VALUES
 (1, 'Home', 'About', 'About', NULL, 1),
-(2, 'Home', 'Contact', 'Contact', NULL, 1),
-(26, 'Welcome', 'Templates', 'Templates', NULL, 1),
-(24, 'SmartHome', 'MAHTemps', 'MAHTemps', '(:any)', 1),
-(25, 'Welcome', 'Welcome', 'Welcome', NULL, 1),
-(9, 'Welcome', 'RelayControl', 'RelayControl', '(:any)/(:any)/(:any)', 1),
-(10, 'Welcome', 'GarageControl', 'GarageControl', '(:any)/(:any)/(:any)', 1),
-(11, 'SmartHome', 'MAHSettings', 'MAHSettings', '', 1),
-(14, 'SmartHome', 'MAHTempSensors', 'MAHTempSensors', NULL, 1),
-(15, 'SmartHome', 'MAHLights', 'MAHLights', NULL, 1),
-(18, 'SmartHome', 'MAHArduinoCode', 'MAHArduinoCode', NULL, 1),
-(17, 'SmartHome', 'MAHGarageDoors', 'MAHGarageDoors', NULL, 1),
-(19, 'SmartHome', 'MAHArduinoCodeDownload', 'MAHArduinoCodeDownload', NULL, 1),
-(27, 'Welcome', 'assets', 'assets', NULL, 1);
+(2, 'Home', 'Contact', 'Contact', '', 1),
+(3, 'Auth', 'token', 'token', NULL, 1),
+(4, 'Auth', 'resource', 'resource', NULL, 1),
+(5, 'Auth', 'authorize', 'authorize', NULL, 1),
+(6, 'Home', 'RelayControl', 'RelayControl', '(:any)/(:any)/(:any)', 1),
+(7, 'Home', 'GarageControl', 'GarageControl', '(:any)/(:any)/(:any)', 1),
+(8, 'Members', 'MAHSettings', 'MAHSettings', NULL, 1),
+(9, 'Members', 'MAHTempSensors', 'MAHTempSensors', NULL, 1),
+(10, 'Members', 'MAHLights', 'MAHLights', NULL, 1),
+(11, 'Members', 'MAHGarageDoors', 'MAHGarageDoors', NULL, 1),
+(12, 'Members', 'MAHArduinoCode', 'MAHArduinoCode', NULL, 1),
+(13, 'Members', 'MAHArduinoCodeDownload', 'MAHArduinoCodeDownload', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -530,7 +529,7 @@ INSERT INTO `uap4_forum_groups` (`id`, `forum_group`, `groupID`) VALUES
 --
 
 CREATE TABLE `uap4_links` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) DEFAULT NULL,
   `url` varchar(255) DEFAULT NULL,
   `alt_text` varchar(255) DEFAULT NULL,
@@ -541,7 +540,7 @@ CREATE TABLE `uap4_links` (
   `drop_down_for` int(11) DEFAULT '0',
   `require_plugin` varchar(255) DEFAULT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -551,3 +550,81 @@ CREATE TABLE `uap4_links` (
 
 INSERT INTO `uap4_links` (`id`, `title`, `url`, `alt_text`, `location`, `link_order`, `link_order_drop_down`, `drop_down`, `drop_down_for`, `require_plugin`) VALUES
 (1, 'Temps', 'MAHTemps', 'Temps', 'header_main', 1, 0, 0, 0, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `uap4_hc_garage`
+--
+
+CREATE TABLE `uap4_hc_garage` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `house_id` varchar(255) DEFAULT NULL,
+  `door_id` varchar(255) DEFAULT NULL,
+  `door_title` varchar(255) DEFAULT NULL,
+  `door_alexa_name` varchar(255) DEFAULT NULL,
+  `door_button` varchar(255) DEFAULT NULL,
+  `door_status` varchar(255) DEFAULT NULL,
+  `enable` int(11) DEFAULT '1',
+  `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `uap4_hc_house`
+--
+
+CREATE TABLE `uap4_hc_house` (
+  `house_id` int(11) NOT NULL AUTO_INCREMENT,
+  `house_token` varchar(255) DEFAULT NULL,
+  `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `uap4_hc_relays`
+--
+
+CREATE TABLE `uap4_hc_relays` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `house_id` varchar(255) DEFAULT NULL,
+  `relay_title` varchar(255) DEFAULT NULL,
+  `relay_alexa_name` varchar(255) DEFAULT NULL,
+  `relay_server_name` varchar(255) DEFAULT NULL,
+  `relay_action` varchar(255) DEFAULT NULL,
+  `last_updated_by` varchar(255) DEFAULT NULL,
+  `enable` int(11) NOT NULL DEFAULT '1',
+  `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `uap4_hc_temps`
+--
+
+CREATE TABLE `uap4_hc_temps` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `house_id` varchar(255) DEFAULT NULL,
+  `temp_title` varchar(255) DEFAULT NULL,
+  `temp_alexa_name` varchar(255) DEFAULT NULL,
+  `temp_server_name` varchar(255) DEFAULT NULL,
+  `temp_data` varchar(255) DEFAULT NULL,
+  `enable` int(11) NOT NULL DEFAULT '1',
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `uap4_hc_user_perm`
+--
+
+CREATE TABLE `uap4_hc_user_perm` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `house_id` varchar(255) DEFAULT NULL,
+  `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
