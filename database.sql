@@ -391,9 +391,9 @@ CREATE TABLE `uap4_settings` (
 --
 
 INSERT INTO `uap4_settings` (`setting_id`, `setting_title`, `setting_data`) VALUES
-(1, 'site_title', 'My UAP4 Web Site'),
-(2, 'site_description', 'Welcome to My UAP4 Web Site'),
-(3, 'site_keywords', 'UAP, UserApplePie'),
+(1, 'site_title', 'My MAH Web Site'),
+(2, 'site_description', 'Welcome to My MAH Web Site'),
+(3, 'site_keywords', 'UAP, UserApplePie, MAH, MyArduinoHome'),
 (4, 'site_user_activation', 'false'),
 (5, 'site_email_username', ''),
 (6, 'site_email_password', ''),
@@ -402,8 +402,8 @@ INSERT INTO `uap4_settings` (`setting_id`, `setting_title`, `setting_data`) VALU
 (9, 'site_email_port', ''),
 (10, 'site_email_smtp', ''),
 (11, 'site_email_site', ''),
-(12, 'site_recapcha_public', '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'),
-(13, 'site_recapcha_private', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'),
+(12, 'site_recapcha_public', ''),
+(13, 'site_recapcha_private', ''),
 (14, 'site_user_invite_code', ''),
 (15, 'site_theme', 'default'),
 (16, 'max_attempts', '5'),
@@ -537,11 +537,5 @@ CREATE TABLE `uap4_links` (
 -- Dumping data for table `uap4_links`
 --
 
-INSERT INTO `uap4_links` (`id`, `title`, `url`, `alt_text`, `location`, `link_order`, `link_order_drop_down`, `drop_down`, `drop_down_for`, `require_plugin`, `timestamp`) VALUES
-(1, 'Home', 'Home', 'Home Page', 'header_main', 1, 0, 0, 0, NULL, '2018-07-08 10:47:22'),
-(2, 'About', 'About', 'About Us', 'header_main', 2, 0, 1, 0, NULL, '2018-07-08 10:48:40'),
-(3, 'Contact', 'Contact', 'Contact Us', 'header_main', 3, 0, 0, 0, '', '2018-07-08 10:49:16'),
-(6, 'About', 'About', 'About', 'header_main', 2, 1, 0, 2, NULL, '2018-07-08 12:28:20'),
-(8, 'Footer', 'Home', 'Footer', 'footer', 1, 0, 0, 0, NULL, '2018-07-15 22:12:13'),
-(10, 'New', 'New', 'New', 'new', 1, 0, 0, 0, '', '2018-07-21 12:28:44'),
-(11, 'Contact Us', 'Contact', '', 'header_main', 2, 2, NULL, 2, '', '2018-08-17 00:25:19');
+INSERT INTO `uap4_links` (`id`, `title`, `url`, `alt_text`, `location`, `link_order`, `link_order_drop_down`, `drop_down`, `drop_down_for`, `require_plugin`) VALUES
+(1, 'Temps', 'MAHTemps', 'Temps', 'header_main', 1, 0, 0, 0, NULL);
