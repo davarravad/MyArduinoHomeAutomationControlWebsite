@@ -61,7 +61,7 @@ use Libs\Language;
 												$door_status
 											</div>
 											<div class='col-lg-6 col-md-6 col-sm-6'>
-												<a href='$door_link' class='btn btn-xs btn-$door_btn float-right'>
+												<a href='#GarageDoorModal".$garage->door_id."' class='btn btn-xs btn-$door_btn float-right trigger-btn' data-toggle='modal'>
 													$door_oc
 												</a>
 											</div>
@@ -71,6 +71,27 @@ use Libs\Language;
 							";
 						}
 						echo "</div><hr>";
+						echo "
+							<div class='modal fade' id='GarageDoorModal".$garage->door_id."' tabindex='-1' role='dialog' aria-labelledby='GarageDoorModal".$garage->door_id."Label' aria-hidden='true'>
+							  <div class='modal-dialog' role='document'>
+							    <div class='modal-content'>
+							      <div class='modal-header'>
+							        <h5 class='modal-title' id='GarageDoorModal".$garage->door_id."Label'>$door_status</h5>
+							        <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+							          <span aria-hidden='true'>&times;</span>
+							        </button>
+							      </div>
+							      <div class='modal-body'>
+							        Do you want to $door_oc?
+							      </div>
+							      <div class='modal-footer'>
+							        <button type='button' class='btn btn-secondary' data-dismiss='modal'>Cancel</button>
+							        <a href='$door_link' class='btn btn-xs btn-$door_btn'>Yes $door_oc</a>
+							      </div>
+							    </div>
+							  </div>
+							</div>
+						";
 					}
 				?>
 

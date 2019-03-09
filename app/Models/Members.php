@@ -214,7 +214,7 @@ class Members extends Models
       // Check to see if profile is being requeted by userID
       if(ctype_digit($user)){
         // Requeted profile information based on ID
-        return $this->db->select("
+        $profile_data = $this->db->select("
           SELECT
             u.userID,
             u.username,
@@ -232,7 +232,7 @@ class Members extends Models
             array(':userID' => $user));
       }else{
         // Requested profile information based on Name
-          return $this->db->select("
+          $profile_data = $this->db->select("
   					SELECT
   						u.userID,
   						u.username,
@@ -249,6 +249,11 @@ class Members extends Models
   					WHERE u.username = :username",
               array(':username' => $user));
       }
+      if(isset($profile_data)){
+        return $profile_data;
+      }else{
+        return false;
+      }
     }
 
     public function getUserName($id)
@@ -264,7 +269,7 @@ class Members extends Models
     public function updateUPrivacy($u_id, $privacy_massemail, $privacy_pm)
     {
         $data = $this->db->update(PREFIX.'users', array('privacy_massemail' => $privacy_massemail, 'privacy_pm' => $privacy_pm), array('userID' => $u_id));
-        if(count($data) > 0){
+        if($data > 0){
           return true;
         }else{
           return false;

@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `uap4_users_online` (
 CREATE TABLE IF NOT EXISTS `uap4_sitelogs` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `membername` varchar(255) DEFAULT NULL,
-  `refer` varchar(255) DEFAULT NULL,
+  `refer` text,
   `useragent` text,
   `cfile` varchar(255) DEFAULT NULL,
   `uri` text,
@@ -367,7 +367,9 @@ INSERT INTO `uap4_forum_settings` (`id`, `setting_title`, `setting_value`, `sett
 (2, 'forum_title', 'Forum', ''),
 (3, 'forum_description', 'Welcome to the Forum', ''),
 (4, 'forum_topic_limit', '20', ''),
-(5, 'forum_topic_reply_limit', '10', '');
+(5, 'forum_topic_reply_limit', '10', ''),
+(6, 'forum_posts_group_change_enable', 'true', ''),
+(7, 'forum_posts_group_change', '15', '');
 
 -- --------------------------------------------------------
 
@@ -402,7 +404,26 @@ INSERT INTO `uap4_settings` (`setting_id`, `setting_title`, `setting_data`) VALU
 (11, 'site_email_site', ''),
 (12, 'site_recapcha_public', '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'),
 (13, 'site_recapcha_private', '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'),
-(14, 'site_theme', 'default');
+(14, 'site_user_invite_code', ''),
+(15, 'site_theme', 'default'),
+(16, 'max_attempts', '5'),
+(17, 'security_duration', '5'),
+(18, 'session_duration', '1'),
+(19, 'session_duration_rm', '1'),
+(20, 'min_username_length', '5'),
+(21, 'max_username_length', '30'),
+(22, 'min_password_length', '5'),
+(23, 'max_password_length', '30'),
+(24, 'min_email_length', '5'),
+(25, 'max_email_length', '100'),
+(26, 'random_key_length', '15'),
+(27, 'default_timezone', 'America/Chicago'),
+(28, 'users_pageinator_limit', '20'),
+(29, 'friends_pageinator_limit', '20'),
+(30, 'message_quota_limit', '50'),
+(31, 'message_pageinator_limit', '10'),
+(32, 'sweet_title_display', 'Sweets'),
+(33, 'sweet_button_display', 'Sweet');
 
 -- --------------------------------------------------------
 
@@ -478,7 +499,7 @@ INSERT INTO `uap4_routes` (`id`, `controller`, `method`, `url`, `arguments`, `en
 -- --------------------------------------------------------
 
 --
--- Dumping data for table `uap4_test_forum_groups`
+-- Dumping data for table `uap4_forum_groups`
 --
 
 INSERT INTO `uap4_forum_groups` (`id`, `forum_group`, `groupID`) VALUES
@@ -489,3 +510,38 @@ INSERT INTO `uap4_forum_groups` (`id`, `forum_group`, `groupID`) VALUES
 (5, 'mods', 3),
 (6, 'mods', 4),
 (7, 'admins', 4);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `uap4_links`
+--
+
+CREATE TABLE `uap4_links` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `url` varchar(255) DEFAULT NULL,
+  `alt_text` varchar(255) DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `link_order` int(11) DEFAULT '0',
+  `link_order_drop_down` int(11) DEFAULT '0',
+  `drop_down` int(11) DEFAULT '0',
+  `drop_down_for` int(11) DEFAULT '0',
+  `require_plugin` varchar(255) DEFAULT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Dumping data for table `uap4_links`
+--
+
+INSERT INTO `uap4_links` (`id`, `title`, `url`, `alt_text`, `location`, `link_order`, `drop_down`,`link_order_drop_down`, `drop_down_for`, `require_plugin`, `timestamp`) VALUES
+(1, 'Home', 'Home', 'Home Page', 'header_main', 1, 0, 0, 0, NULL, '2018-07-08 10:47:22'),
+(2, 'About', 'About', 'About Us', 'header_main', 2, 0, 1, 0, NULL, '2018-07-08 10:48:40'),
+(3, 'Contact', 'Contact', 'Contact Us', 'header_main', 3, 0, 0, 0, NULL, '2018-07-08 10:49:16'),
+(4, 'Members', 'Members', 'Members', 'header_main', 2, 1, 0, 2, NULL, '2018-07-08 11:40:26'),
+(5, 'Online Members', 'Online-Members', 'Online Members', 'header_main', 2, 2, 0, 2, NULL, '2018-07-08 12:25:39'),
+(6, 'About', 'About', 'About', 'header_main', 2, 3, 0, 2, NULL, '2018-07-08 12:28:20'),
+(7, 'Forum', 'Forum', 'Forum', 'header_main', 4, 0, 0, 0, 'Forum', '2018-07-08 12:30:44');

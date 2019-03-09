@@ -48,10 +48,6 @@ use Libs\Form,
     				<?php echo Form::input(array('type' => 'text', 'name' => 'site_keywords', 'class' => 'form-control', 'value' => $site_keywords, 'placeholder' => 'Site Keywords', 'maxlength' => '255')); ?>
     			</div>
 
-    				<!-- CSRF Token -->
-    				<input type="hidden" name="token_settings" value="<?php echo $data['csrfToken']; ?>" />
-                    <input type="hidden" name="update_settings" value="true" />
-
             </div>
     	</div>
     </div>
@@ -217,6 +213,9 @@ use Libs\Form,
             <?php // echo Language::show('update_profile', 'Auth'); ?>
             Update Site Settings
         </button>
+        <!-- CSRF Token and What is Being Updated -->
+        <input type="hidden" name="token_settings" value="<?php echo $data['csrfToken']; ?>" />
+        <input type="hidden" name="update_settings" value="true" />
         <?php echo Form::close(); ?><Br><br>
     </div>
   </div>

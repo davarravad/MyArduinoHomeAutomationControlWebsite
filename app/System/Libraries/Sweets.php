@@ -15,10 +15,6 @@ use Libs\Database,
     Libs\Form,
     Libs\Request;
 
-// Define what we want to call our sweets (Sweets/Likes/etc.)
-define('SWEET_TITLE_DISPLAY', 'Sweets'); // Purl Display
-define('SWEET_BUTTON_DISPLAY', 'Sweet'); // Singular Button Display
-
 class Sweets
 {
 
@@ -80,7 +76,7 @@ class Sweets
       $sweet_total = count($sweet_count);
     }
     if($display_type == "btn"){
-      $sweet_display = " <div class='btn btn-success btn-xs'>".SWEET_TITLE_DISPLAY." <span class='badge badge-light'>$sweet_total</span></div> ";
+      $sweet_display = " <div class='btn btn-success btn-sm'>".SWEET_TITLE_DISPLAY." <span class='badge badge-light'>$sweet_total</span></div> ";
     }else if($display_type = "num"){
       $sweet_display = $sweet_total;
     }
@@ -156,7 +152,7 @@ class Sweets
           $sweet_button_display .= " <input type='hidden' name='sweet_sec_id' value='$sweet_sec_id' /> ";
           $sweet_button_display .= " <input type='hidden' name='sweet_location' value='$sweet_location' /> ";
           $sweet_button_display .= " <input type='hidden' name='sweet_owner_userid' value='$sweet_owner_userid' /> ";
-          $sweet_button_display .= " <button type='submit' class='btn btn-warning btn-xs' value='Sweet' name='sweet'> Un".SWEET_BUTTON_DISPLAY." </button> ";
+          $sweet_button_display .= " <button type='submit' class='btn btn-warning btn-sm' value='Sweet' name='sweet'> Un".SWEET_BUTTON_DISPLAY." </button> ";
         }else{
           // Display Sweet Button if user has not yet sweeted
           $sweet_button_display .= " <input type='hidden' name='submit_sweet' value='true' /> ";
@@ -164,7 +160,7 @@ class Sweets
           $sweet_button_display .= " <input type='hidden' name='sweet_sec_id' value='$sweet_sec_id' /> ";
           $sweet_button_display .= " <input type='hidden' name='sweet_location' value='$sweet_location' /> ";
           $sweet_button_display .= " <input type='hidden' name='sweet_owner_userid' value='$sweet_owner_userid' /> ";
-          $sweet_button_display .= " <button type='submit' class='btn btn-success btn-xs' value='Sweet' name='sweet'> ".SWEET_BUTTON_DISPLAY." </button> ";
+          $sweet_button_display .= " <button type='submit' class='btn btn-success btn-sm' value='Sweet' name='sweet'> ".SWEET_BUTTON_DISPLAY." </button> ";
         }
         // Close the Sweet Button Form
         $sweet_button_display .= Form::close();;
@@ -208,8 +204,7 @@ class Sweets
                 'sweet_location' => $sweet_location,
                 'sweet_owner_userid' => $sweet_owner_userid,
                 'sweet_sec_id' => $sweet_sec_id));
-      $count = count($sweet_add_data);
-      if($count > 0){
+      if($sweet_add_data > 0){
         // Success
         SuccessMessages::push('You Have Successfully Submitted a '.SWEET_BUTTON_DISPLAY, $sweet_url);
       }else{
@@ -238,8 +233,7 @@ class Sweets
                 'sweet_location' => $sweet_location,
                 'sweet_owner_userid' => $sweet_owner_userid,
                 'sweet_sec_id' => $sweet_sec_id));
-      $count = count($sweet_remove_data);
-      if($count > 0){
+      if($sweet_remove_data > 0){
         // Success
         SuccessMessages::push('You Have Successfully Deleted a '.SWEET_BUTTON_DISPLAY, $sweet_url);
       }else{
@@ -273,7 +267,7 @@ class Sweets
             ':sweet_location' => $sweet_location,
             ':sweet_sec_location' => $sweet_sec_location));
     $sweet_total = count($sweet_count);
-    $sweet_display = " <div class='btn btn-success btn-xs'>".SWEET_TITLE_DISPLAY." <span class='badge badge-light'>$sweet_total</span></div> ";
+    $sweet_display = " <div class='btn btn-success btn-sm'>".SWEET_TITLE_DISPLAY." <span class='badge badge-light'>$sweet_total</span></div> ";
     return $sweet_display;
   }
 

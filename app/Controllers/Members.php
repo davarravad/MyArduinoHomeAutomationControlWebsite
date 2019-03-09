@@ -22,8 +22,6 @@ use App\System\Controller,
     Libs\SimpleImage,
     App\System\Error;
 
-define('USERS_PAGEINATOR_LIMIT', '20');  // Sets up users listing page limit
-
 class Members extends Controller
 {
     private $pages;
@@ -160,7 +158,7 @@ class Members extends Controller
     {
         $onlineUsers = new MembersModel();
         $profile = $onlineUsers->getUserProfile($user);
-        if(sizeof($profile)>0){
+        if($profile){
             $data['title'] = $profile[0]->username . "'s ".$this->language->get('members_profile_title');
             $data['profile'] = $profile[0];
 
@@ -265,8 +263,7 @@ class Members extends Controller
                     $onlineUsers->updateProfile($u_id, $firstName, $lastName, $gender, $website, $db_image, $aboutMe, $signature);
                     // Success Message Display
                     SuccessMessages::push($this->language->get('edit_profile_success'), 'Edit-Profile');
-                }
-                else{
+                }else{
                     // Error Message Display
                     ErrorMessages::push($this->language->get('edit_profile_error'), 'Edit-Profile');
                 }
@@ -297,7 +294,7 @@ class Members extends Controller
         			<li class='breadcrumb-item active'>".$data['title']."</li>
             ";
 
-            Load::View("Members/Edit-Profile", $data, "Members/MAH-Member-Account-Sidebar::Left");
+            Load::View("Members/Edit-Profile", $data, "Members/Member-Account-Sidebar::Left");
 
         }else{
           /** User Not logged in - kick them out **/
@@ -329,7 +326,7 @@ class Members extends Controller
     			<li class='breadcrumb-item active'>".$data['title']."</li>
         ";
 
-        Load::View("Members/Account-Settings", $data, "Members/MAH-Member-Account-Sidebar::Left");
+        Load::View("Members/Account-Settings", $data, "Members/Member-Account-Sidebar::Left");
     }
 
     /**
@@ -385,6 +382,6 @@ class Members extends Controller
     			<li class='breadcrumb-item active'>".$data['title']."</li>
         ";
 
-        Load::View("Members/Privacy-Settings", $data, "Members/MAH-Member-Account-Sidebar::Left");
+        Load::View("Members/Privacy-Settings", $data, "Members/Member-Account-Sidebar::Left");
     }
 }

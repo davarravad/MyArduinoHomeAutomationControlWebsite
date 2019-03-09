@@ -32,16 +32,26 @@ class AdminPanel extends Models {
   	public function updateSetting($setting_title, $setting_data){
       /* Check to see if data is the same */
       $cur_setting = SELF::getSettings($setting_title);
-      if($cur_setting == $setting_data){
-        return true;
+      if(isset($cur_setting)){
+        if($cur_setting == $setting_data){
+          return true;
+        }else{
+      		/* Update Setting Data */
+      		$query = $this->db->update(PREFIX.'settings', array('setting_data' => $setting_data), array('setting_title' => $setting_title));
+      		if(isset($query) && $query > 0){
+      			return true;
+      		}else{
+      			return false;
+      		}
+        }
       }else{
-    		/* Update Setting Data */
-    		$query = $this->db->update(PREFIX.'settings', array('setting_data' => $setting_data), array('setting_title' => $setting_title));
-    		if(isset($query) && $query > 0){
-    			return true;
-    		}else{
-    			return false;
-    		}
+        /* Insert New Setting Data */
+        $query = $this->db->insert(PREFIX.'settings', array('setting_title' => $setting_title, 'setting_data' => $setting_data));
+        if(isset($query) && $query > 0){
+          return true;
+        }else{
+          return false;
+        }
       }
   	}
 
@@ -103,8 +113,7 @@ class AdminPanel extends Models {
     $au_signature = nl2br($au_signature);
 		// Update users table
 		$query = $this->db->update(PREFIX.'users', array('username' => $au_username, 'firstName' => $au_firstName, 'lastName' => $au_lastName, 'email' => $au_email, 'gender' => $au_gender, 'userImage' => $au_userImage, 'website' => $au_website, 'aboutme' => $au_aboutme, 'signature' => $au_signature), array('userID' => $au_id));
-		$count = count($query);
-		if($count > 0){
+		if($query > 0){
 			return true;
 		}else{
 			return false;
@@ -114,9 +123,8 @@ class AdminPanel extends Models {
   // Update users isactive status
   public function activateUser($au_id){
     // Update users table isactive status
-		$query_a = $this->db->update(PREFIX.'users', array('isactive' => '1'), array('userID' => $au_id));
-		$count_a = count($query_a);
-		if($count_a > 0){
+		$query = $this->db->update(PREFIX.'users', array('isactive' => '1'), array('userID' => $au_id));
+		if($query > 0){
 			return true;
 		}else{
 			return false;
@@ -126,9 +134,8 @@ class AdminPanel extends Models {
   // Update users isactive status
   public function deactivateUser($au_id){
     // Update users table isactive status
-		$query_a = $this->db->update(PREFIX.'users', array('isactive' => '0'), array('userID' => $au_id));
-		$count_a = count($query_a);
-		if($count_a > 0){
+		$query = $this->db->update(PREFIX.'users', array('isactive' => '0'), array('userID' => $au_id));
+		if($query > 0){
 			return true;
 		}else{
 			return false;
@@ -143,13 +150,13 @@ class AdminPanel extends Models {
   * @return int count
   */
   public function getTotalUsers(){
-    $data = $this->db->select("
+    $data = $this->db->selectCount("
         SELECT
           *
         FROM
           ".PREFIX."users
         ");
-    return count($data);
+    return $data;
   }
 
   // Get list of all groups
@@ -167,7 +174,7 @@ class AdminPanel extends Models {
 
   // Check to see if user is member of group
   public function checkUserGroup($userID, $groupID){
-    $data = $this->db->select("
+    $data = $this->db->selectCount("
         SELECT
           userID,
           groupID
@@ -181,8 +188,7 @@ class AdminPanel extends Models {
           groupID DESC
         ",
         array(':userID' => $userID, ':groupID' => $groupID));
-      $count = count($data);
-      if($count > 0){
+      if($data > 0){
         return true;
       }else{
         return false;
@@ -211,7 +217,7 @@ class AdminPanel extends Models {
 
   // Check to see how many groups user is a member of
   public function checkUserGroupsCount($userID){
-    $data = $this->db->select("
+    $data = $this->db->selectCount("
         SELECT
           userID
         FROM
@@ -220,8 +226,7 @@ class AdminPanel extends Models {
           userID = :userID
         ",
         array(':userID' => $userID));
-      $count = count($data);
-      if($count <= 1){
+      if($data <= 1){
         return false;
       }else{
         return true;
@@ -231,8 +236,7 @@ class AdminPanel extends Models {
   // Remove given user from group
   public function removeFromGroup($userID, $groupID){
     $data = $this->db->delete(PREFIX.'users_groups', array('userID' => $userID, 'groupID' => $groupID));
-    $count = count($data);
-    if($count > 0){
+    if($data > 0){
       return true;
     }else{
       return false;
@@ -242,8 +246,7 @@ class AdminPanel extends Models {
   // Add given user to group
   public function addToGroup($userID, $groupID){
     $data = $this->db->insert(PREFIX.'users_groups', array('userID' => $userID, 'groupID' => $groupID));
-    $count = count($data);
-    if($count > 0){
+    if($data > 0){
       return true;
     }else{
       return false;
@@ -306,9 +309,8 @@ class AdminPanel extends Models {
 	public function updateGroup($ag_groupID, $ag_groupName, $ag_groupDescription, $ag_groupFontColor, $ag_groupFontWeight){
 		// Update groups table
 		$query = $this->db->update(PREFIX.'groups', array('groupName' => $ag_groupName, 'groupDescription' => $ag_groupDescription, 'groupFontColor' => $ag_groupFontColor, 'groupFontWeight' => $ag_groupFontWeight), array('groupID' => $ag_groupID));
-		$count = count($query);
 		// Check to make sure something was updated
-		if($count > 0){
+		if($query > 0){
 			return true;
 		}else{
 			return false;
@@ -318,8 +320,7 @@ class AdminPanel extends Models {
   // delete group
   public function deleteGroup($groupID){
     $data = $this->db->delete(PREFIX.'groups', array('groupID' => $groupID));
-    $count = count($data);
-    if($count > 0){
+    if($data > 0){
       return true;
     }else{
       return false;
@@ -338,8 +339,7 @@ class AdminPanel extends Models {
   public function createGroup($groupName){
     $data = $this->db->insert(PREFIX.'groups', array('groupName' => $groupName));
     $new_group_id = $this->db->lastInsertId('groupID');
-    $count = count($data);
-    if($count > 0){
+    if($data > 0){
       return $new_group_id;
     }else{
       return false;
@@ -400,9 +400,8 @@ class AdminPanel extends Models {
 		$content = nl2br($content);
 		// Update messages table
 		$query = $this->db->insert(PREFIX.'messages', array('to_userID' => $to_userID, 'from_userID' => $from_userID, 'subject' => $subject, 'content' => $content));
-		$count = count($query);
 		// Check to make sure something was updated
-		if($count > 0){
+		if($query > 0){
       // Message was updated in database, now we send the to user an email notification.
       // Get from user's data
       $data2 = $this->db->select("SELECT username FROM ".PREFIX."users WHERE userID = :userID",
@@ -437,7 +436,7 @@ class AdminPanel extends Models {
     * @return int count
     */
     public function checkForRoute($controller, $method){
-        $data = $this->db->select("
+        $data = $this->db->selectCount("
             SELECT
                 *
             FROM
@@ -447,8 +446,7 @@ class AdminPanel extends Models {
             AND
                 method = :method
         ", array(':controller' => $controller, ':method' => $method));
-      $count = count($data);
-      if($count > 0){
+      if($data > 0){
           return true;
       }else{
           return false;
@@ -468,8 +466,7 @@ class AdminPanel extends Models {
      */
     public function addRoute($controller, $method){
       $data = $this->db->insert(PREFIX.'routes', array('controller' => $controller, 'method' => $method, 'url' => $method));
-      $count = count($data);
-      if($count > 0){
+      if($data > 0){
         return true;
       }else{
         return false;
@@ -511,8 +508,7 @@ class AdminPanel extends Models {
                 id = :id
             LIMIT 1
         ", array(':id' => $id));
-      $count = count($data);
-      if($count > 0){
+      if(isset($data)){
           return $data;
       }else{
           return false;
@@ -528,8 +524,7 @@ class AdminPanel extends Models {
      */
   	public function updateRoute($id, $controller, $method, $url, $arguments, $enable){
   		$query = $this->db->update(PREFIX.'routes', array('controller' => $controller, 'method' => $method, 'url' => $url, 'arguments' => $arguments, 'enable' => $enable), array('id' => $id));
-  		$count = count($query);
-  		if($count > 0){
+  		if($query > 0){
   			return true;
   		}else{
   			return false;
@@ -547,12 +542,365 @@ class AdminPanel extends Models {
      */
     public function deleteRoute($id){
       $data = $this->db->delete(PREFIX.'routes', array('id' => $id));
-      $count = count($data);
-      if($count > 0){
+      if($data > 0){
         return true;
       }else{
         return false;
       }
     }
+
+    /**
+    * getAuthLogs
+    *
+    * Gets auth logs
+    *
+    * @return array dataset
+    */
+    public function getAuthLogs($limit = null){
+      return $this->db->select("SELECT * FROM ".PREFIX."activitylog WHERE NOT action='AUTH_CHECKSESSION' ORDER BY date DESC $limit");
+    }
+
+    /**
+    * getTotalAuthLogs
+    *
+    * Gets total count of entries in auth logs
+    *
+    * @return int count
+    */
+    public function getTotalAuthLogs(){
+      return $this->db->selectCount("SELECT * FROM ".PREFIX."activitylog WHERE NOT action='AUTH_CHECKSESSION' ");
+    }
+
+    /**
+    * getSiteLinks
+    *
+    * Gets all Main Links that are not dropdown links
+    *
+    * @return array dataset
+    */
+    public function getSiteLinks($location){
+      return $this->db->select("SELECT * FROM ".PREFIX."links WHERE location = :location AND drop_down_for='0' ORDER BY link_order ASC", array(':location'=>$location));
+    }
+
+    /**
+    * getSiteLinksLastID
+    *
+    * Gets id of last link order link
+    *
+    * @return array dataset
+    */
+    public function getSiteLinksLastID($location){
+      $last_link = $this->db->select("SELECT link_order FROM ".PREFIX."links WHERE location = :location AND drop_down_for='0' ORDER BY link_order DESC LIMIT 1", array(':location'=>$location));
+      return $last_link[0]->link_order;
+    }
+
+    /**
+     * moveUpLink
+     *
+     * update position of given object.
+     *
+     * @param int id of the object
+     *
+     * @return boolean returns true/false
+     */
+    public function moveUpLink($location,$link_id){
+      $current_link_order = $this->db->select("SELECT link_order FROM ".PREFIX."links WHERE location = :location AND id = :id LIMIT 1", array(':location'=>$location,':id'=>$link_id));
+      $old = $current_link_order[0]->link_order;
+      // Moving up one spot
+      $new = $old - 1;
+      // Make sure this object is not already at top
+      if($new > 0){
+        // Update groups table
+        $query = $this->db->raw("
+          UPDATE
+            ".PREFIX."links
+          SET
+            `link_order` = CASE
+            WHEN (`link_order` = $old) THEN
+              $new
+            WHEN (`link_order` > $old and `link_order` <= $new) THEN
+              `link_order`- 1
+            WHEN (`link_order` < $old and `link_order` >= $new) THEN
+              `link_order`+ 1
+            ELSE
+              `link_order`
+          END
+          WHERE `location` = '$location'
+          ");
+        // Check to make sure something was updated
+        if(isset($query)){
+          return true;
+        }else{
+          return false;
+        }
+      }else{
+        return false;
+      }
+    }
+
+    /**
+     * moveDownLink
+     *
+     * update position of given object.
+     *
+     * @param int id of the object
+     *
+     * @return boolean returns true/false
+     */
+    public function moveDownLink($location,$link_id){
+      $current_link_order = $this->db->select("SELECT link_order FROM ".PREFIX."links WHERE location = :location AND id = :id LIMIT 1", array(':location'=>$location,':id'=>$link_id));
+      $old = $current_link_order[0]->link_order;
+      // Moving down one spot
+      $new = $old + 1;
+      // Update groups table
+      $query = $this->db->raw("
+        UPDATE
+          ".PREFIX."links
+        SET
+          `link_order` = CASE
+          WHEN (`link_order` = $old) THEN
+            $new
+          WHEN (`link_order` < $old and `link_order` >= $new) THEN
+            `link_order`+ 1
+          WHEN (`link_order` > $old and `link_order` <= $new) THEN
+            `link_order`- 1
+          ELSE
+            `link_order`
+        END
+        WHERE `location` = '$location'
+        ");
+      // Check to make sure something was updated
+      if(isset($query)){
+        return true;
+      }else{
+        return false;
+      }
+    }
+
+    /**
+    * getSiteLinks
+    *
+    * Gets all Main Links that are not dropdown links
+    *
+    * @return array dataset
+    */
+    public function getSiteLinkData($id){
+      return $this->db->select("SELECT * FROM ".PREFIX."links WHERE id = :id LIMIT 1", array(':id'=>$id));
+    }
+
+    /**
+     * addSiteLink
+     *
+     * adds new Site Link To Database
+     *
+     * @return boolean returns true/false
+     */
+    public function addSiteLink($title, $url, $alt_text, $location, $drop_down, $require_plugin = null){
+      $link_order_last = SELF::getSiteLinksLastID($location);
+      if(isset($link_order_last)){
+        $link_order = $link_order_last + 1;
+      }else{
+        $link_order = "1";
+      }
+      $data = $this->db->insert(PREFIX.'links', array('title' => $title, 'url' => $url, 'alt_text' => $alt_text, 'location' => $location, 'drop_down' => $drop_down, 'require_plugin' => $require_plugin, 'link_order' => $link_order));
+      if($data > 0){
+        return true;
+      }else{
+        return false;
+      }
+    }
+
+    /**
+     * updateSiteLink
+     *
+     * updates Site Link in Database
+     *
+     * @return boolean returns true/false
+     */
+  	public function updateSiteLink($id, $title, $url, $alt_text, $location, $drop_down, $require_plugin = null){
+  		$query = $this->db->update(PREFIX.'links', array('title' => $title, 'url' => $url, 'alt_text' => $alt_text, 'location' => $location, 'drop_down' => $drop_down, 'require_plugin' => $require_plugin), array('id' => $id));
+  		if($query > 0){
+  			return true;
+  		}else{
+  			return false;
+  		}
+  	}
+
+    /**
+     * deleteSiteLink
+     *
+     * Remove Site Link from Database
+     *
+     * @param int $id site link ID
+     *
+     * @return boolean returns true/false
+     */
+    public function deleteSiteLink($id){
+      $data = $this->db->delete(PREFIX.'links', array('id' => $id));
+      if($data > 0){
+        return true;
+      }else{
+        return false;
+      }
+    }
+
+    /**
+    * getSiteDropDownLinks
+    *
+    * Gets all links for Drop Down link
+    *
+    * @return array dataset
+    */
+    public function getSiteDropDownLinks($id){
+      return $this->db->select("SELECT * FROM ".PREFIX."links WHERE drop_down_for = :id ORDER BY link_order_drop_down ASC", array(':id'=>$id));
+    }
+
+    /**
+    * getSiteDropDownLinksLastID
+    *
+    * Gets id of last link order link
+    *
+    * @return array dataset
+    */
+    public function getSiteDropDownLinksLastID($id){
+      $last_link = $this->db->select("SELECT link_order_drop_down FROM ".PREFIX."links WHERE drop_down_for = :id ORDER BY link_order_drop_down DESC LIMIT 1", array(':id'=>$id));
+      return $last_link[0]->link_order_drop_down;
+    }
+
+    /**
+     * moveUpDDLink
+     *
+     * update position of given object.
+     *
+     * @param int id of the object
+     *
+     * @return boolean returns true/false
+     */
+    public function moveUpDDLink($main_link_id,$dd_link_id){
+      $current_link_order = $this->db->select("SELECT link_order_drop_down FROM ".PREFIX."links WHERE drop_down_for = :drop_down_for AND id = :id LIMIT 1", array(':drop_down_for'=>$main_link_id,':id'=>$dd_link_id));
+      $old = $current_link_order[0]->link_order_drop_down;
+      // Moving up one spot
+      $new = $old - 1;
+      // Make sure this object is not already at top
+      if($new > 0){
+        // Update groups table
+        $query = $this->db->raw("
+          UPDATE
+            ".PREFIX."links
+          SET
+            `link_order_drop_down` = CASE
+            WHEN (`link_order_drop_down` = $old) THEN
+              $new
+            WHEN (`link_order_drop_down` > $old and `link_order_drop_down` <= $new) THEN
+              `link_order_drop_down`- 1
+            WHEN (`link_order_drop_down` < $old and `link_order_drop_down` >= $new) THEN
+              `link_order_drop_down`+ 1
+            ELSE
+              `link_order_drop_down`
+          END
+          WHERE `drop_down_for` = '$main_link_id'
+          ");
+        // Check to make sure something was updated
+        if(isset($query)){
+          return true;
+        }else{
+          return false;
+        }
+      }else{
+        return false;
+      }
+    }
+
+    /**
+     * moveDownDDLink
+     *
+     * update position of given object.
+     *
+     * @param int id of the object
+     *
+     * @return boolean returns true/false
+     */
+    public function moveDownDDLink($main_link_id,$dd_link_id){
+      $current_link_order = $this->db->select("SELECT link_order_drop_down FROM ".PREFIX."links WHERE drop_down_for = :drop_down_for AND id = :id LIMIT 1", array(':drop_down_for'=>$main_link_id,':id'=>$dd_link_id));
+      $old = $current_link_order[0]->link_order_drop_down;
+      // Moving down one spot
+      $new = $old + 1;
+      // Update groups table
+      $query = $this->db->raw("
+        UPDATE
+          ".PREFIX."links
+        SET
+          `link_order_drop_down` = CASE
+          WHEN (`link_order_drop_down` = $old) THEN
+            $new
+          WHEN (`link_order_drop_down` < $old and `link_order_drop_down` >= $new) THEN
+            `link_order_drop_down`+ 1
+          WHEN (`link_order_drop_down` > $old and `link_order_drop_down` <= $new) THEN
+            `link_order_drop_down`- 1
+          ELSE
+            `link_order_drop_down`
+        END
+        WHERE `drop_down_for` = '$main_link_id'
+        ");
+      // Check to make sure something was updated
+      if(isset($query)){
+        return true;
+      }else{
+        return false;
+      }
+    }
+
+    /**
+     * addSiteDDLink
+     *
+     * adds new Site Drop Down Link To Database
+     *
+     * @return boolean returns true/false
+     */
+    public function addSiteDDLink($title, $url, $alt_text, $location, $drop_down, $require_plugin = null, $drop_down_for){
+      $link_order_last = SELF::getSiteDropDownLinksLastID($drop_down_for);
+      if(isset($link_order_last)){
+        $link_order = $link_order_last + 1;
+      }else{
+        $link_order = "1";
+      }
+      $current_link_order = $this->db->select("SELECT link_order FROM ".PREFIX."links WHERE id = :id LIMIT 1", array(':id'=>$drop_down_for));
+      $get_link_order = $current_link_order[0]->link_order;
+      $data = $this->db->insert(PREFIX.'links', array('title' => $title, 'url' => $url, 'alt_text' => $alt_text, 'location' => $location, 'drop_down' => $drop_down, 'require_plugin' => $require_plugin,
+                                                          'link_order_drop_down' => $link_order, 'drop_down_for' => $drop_down_for, 'link_order' => $get_link_order));
+      if($data > 0){
+        return true;
+      }else{
+        return false;
+      }
+    }
+
+    /**
+    * getMainLinkTitle
+    *
+    * Gets Link Title based on ID
+    *
+    * @return array dataset
+    */
+    public function getMainLinkTitle($id){
+      $data = $this->db->select("SELECT title FROM ".PREFIX."links WHERE id = :id LIMIT 1", array(':id'=>$id));
+      return $data[0]->title;
+    }
+
+    /**
+     * updateSiteDDLink
+     *
+     * updates Site Drop Down Link in Database
+     *
+     * @return boolean returns true/false
+     */
+  	public function updateSiteDDLink($id, $title, $url, $alt_text, $location, $drop_down, $require_plugin = null){
+  		$query = $this->db->update(PREFIX.'links', array('title' => $title, 'url' => $url, 'alt_text' => $alt_text, 'location' => $location, 'drop_down' => $drop_down, 'require_plugin' => $require_plugin), array('id' => $id));
+  		if($query > 0){
+  			return true;
+  		}else{
+  			return false;
+  		}
+  	}
 
 }

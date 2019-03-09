@@ -102,7 +102,7 @@ if(isset($cur_uap_version) || isset($cur_uap_messages_version) || isset($cur_uap
                 <i class="fa fa-angle-right"></i>
               </span>
             </a>
-			</div>
+			</div>			
 		</div>
 	</div>
 

@@ -2,9 +2,9 @@
 /**
 * UserApplePie v4 Messages Controller Plugin
 *
-* UserApplePie
+* UserApplePie - Messages Plugin
 * @author David (DaVaR) Sargent <davar@userapplepie.com>
-* @version 4.2.1
+* @version 2.1.0 for UAP v.4.2.1
 */
 
 namespace App\Plugins\Messages\Controllers;
@@ -17,13 +17,6 @@ use App\System\Controller,
   Libs\Url,
   Libs\SuccessMessages,
   Libs\ErrorMessages;
-
-  /**
-  *  Define Message Limit for Inbox and Outbox
-  *  And Message Limit per page for Paginator
-  */
-  define('MESSAGE_QUOTA_LIMIT','50');  // Inbox and Outbox total Limit
-  define('MESSAGE_PAGEINATOR_LIMIT','10');  // How many message to display per page
 
 class Messages extends Controller{
 
@@ -157,10 +150,10 @@ class Messages extends Controller{
                 $m_read_error[] = true;
       				}
             }
-            if(count($m_read_success) >= 1){
+            if(isset($m_read_success) && count($m_read_success) >= 1){
               // Message Delete Success Display
               SuccessMessages::push('You Have Successfully Marked Messages as Read', 'MessagesInbox');
-            }else if(count($m_read_error) >= 1){
+            }else if(isset($m_read_error) && count($m_read_error) >= 1){
               // Message Delete Error Display
               ErrorMessages::push('Mark Messages Read Failed', 'MessagesInbox');
             }
@@ -437,7 +430,7 @@ class Messages extends Controller{
                         $error[] = 'Message Content Field is Blank!';
                     }
                     // Check for errors before sending message
-                    if(count($error) == 0){
+                    if(!isset($error)){
                         // Get the userID of to username
                         $to_userID = $this->model->getUserIDFromUsername($to_username);
                         // Check to make sure user exists in Database
@@ -483,8 +476,7 @@ class Messages extends Controller{
 		}
 
         // Check to see if there were any errors, if so then auto load form data
-        if(empty($error)){ $error = ""; }
-        if(count($error) > 0 && !isset($data['subject']) && !isset($data['content'])){
+        if(isset($error) && !isset($data['subject']) && !isset($data['content'])){
             // Auto Fill form to make things eaiser for user
             $data['subject'] = Request::post('subject');
             $data['content'] = Request::post('content');

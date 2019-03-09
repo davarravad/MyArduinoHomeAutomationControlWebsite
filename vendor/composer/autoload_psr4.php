@@ -7,10 +7,8 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
-    'Symfony\\Component\\Debug\\' => array($vendorDir . '/symfony/debug'),
     'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
     'ReCaptcha\\' => array($vendorDir . '/google/recaptcha/src/ReCaptcha'),
-    'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Libs\\' => array($baseDir . '/app/System/Libraries'),
     'App\\' => array($baseDir . '/app'),
 );

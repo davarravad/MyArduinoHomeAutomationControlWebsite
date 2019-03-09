@@ -47,9 +47,9 @@ class Paginator
     /**
      *  __construct
      *
-     *  Pass values when class is istantiated.
+     *  Pass values when class is initiated.
      *
-     * @param numeric  $perPage  sets the number of iteems per page
+     * @param numeric  $perPage  sets the number of items per page
      * @param numeric  $current_page sets the instance for the GET parameter
      */
     public function __construct($perPage = null, $curPage = null)
