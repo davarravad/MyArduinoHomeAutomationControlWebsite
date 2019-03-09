@@ -493,8 +493,20 @@ CREATE TABLE `uap4_routes` (
 --
 
 INSERT INTO `uap4_routes` (`id`, `controller`, `method`, `url`, `arguments`, `enable`) VALUES
-(1, 'Home', 'About', 'About', '', 1),
-(2, 'Home', 'Contact', 'Contact', '', 1);
+(1, 'Home', 'About', 'About', NULL, 1),
+(2, 'Home', 'Contact', 'Contact', NULL, 1),
+(26, 'Welcome', 'Templates', 'Templates', NULL, 1),
+(24, 'SmartHome', 'MAHTemps', 'MAHTemps', '(:any)', 1),
+(25, 'Welcome', 'Welcome', 'Welcome', NULL, 1),
+(9, 'Welcome', 'RelayControl', 'RelayControl', '(:any)/(:any)/(:any)', 1),
+(10, 'Welcome', 'GarageControl', 'GarageControl', '(:any)/(:any)/(:any)', 1),
+(11, 'SmartHome', 'MAHSettings', 'MAHSettings', '', 1),
+(14, 'SmartHome', 'MAHTempSensors', 'MAHTempSensors', NULL, 1),
+(15, 'SmartHome', 'MAHLights', 'MAHLights', NULL, 1),
+(18, 'SmartHome', 'MAHArduinoCode', 'MAHArduinoCode', NULL, 1),
+(17, 'SmartHome', 'MAHGarageDoors', 'MAHGarageDoors', NULL, 1),
+(19, 'SmartHome', 'MAHArduinoCodeDownload', 'MAHArduinoCodeDownload', NULL, 1),
+(27, 'Welcome', 'assets', 'assets', NULL, 1);
 
 -- --------------------------------------------------------
 
