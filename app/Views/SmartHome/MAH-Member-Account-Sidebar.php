@@ -4,13 +4,12 @@
 *
 * UserApplePie
 * @author David (DaVaR) Sargent <davar@userapplepie.com>
-* @version 4.0.0
+* @version 4.2.1
 */
 
 use Libs\Language;
 ?>
 
-<div class='col-lg-4 col-md-4 col-sm-4'>
   <div class='card border-primary mb-3'>
     <div class='card-header h4' style='font-weight: bold'>
       <?=Language::show('mem_act_settings_title', 'Members'); ?>
@@ -35,4 +34,4 @@ use Libs\Language;
       <li class='list-group-item'><a href='<?=DIR?>MAHArduinoCode' rel='nofollow'>Arduino Code</a></li>
     </ul>
   </div>
-</div>
+

@@ -10,7 +10,6 @@
 use Libs\Language;
 ?>
 
-<div class='col-lg-4 col-md-4 col-sm-12'>
   <div class='card border-primary mb-3'>
     <div class='card-header h4' style='font-weight: bold'>
       <?=Language::show('mem_act_settings_title', 'Members'); ?>
@@ -22,4 +21,16 @@ use Libs\Language;
       <li class='list-group-item'><a href='<?=DIR?>Privacy-Settings' rel='nofollow'><?=Language::show('mem_act_privacy_settings', 'Members'); ?></a></li>
     </ul>
   </div>
-</div>
+
+    <div class='card border-primary mb-3'>
+    <div class='card-header h4' style='font-weight: bold'>
+      My Arduino Home
+    </div>
+    <ul class='list-group'>
+      <li class='list-group-item'><a href='<?=DIR?>MAHSettings' rel='nofollow'>Settings</a></li>
+      <li class='list-group-item'><a href='<?=DIR?>MAHTempSensors' rel='nofollow'>Temp Sensors</a></li>
+      <li class='list-group-item'><a href='<?=DIR?>MAHGarageDoors' rel='nofollow'>Garage Doors</a></li>
+      <li class='list-group-item'><a href='<?=DIR?>MAHLights' rel='nofollow'>Lights</a></li>
+      <li class='list-group-item'><a href='<?=DIR?>MAHArduinoCode' rel='nofollow'>Arduino Code</a></li>
+    </ul>
+  </div>
