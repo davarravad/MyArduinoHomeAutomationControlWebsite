@@ -27,10 +27,10 @@ class Config {
     define('SITE_URL', 'https://localhost/');
 
     /* Define Controller */
-    define('DEFAULT_CONTROLLER', 'Home');
+    define('DEFAULT_CONTROLLER', 'Welcome');
 
     /* Default Method */
-    define('DEFAULT_METHOD', 'Home');
+    define('DEFAULT_METHOD', 'Welcome');
 
     /* Default Template */
     define('DEFAULT_TEMPLATE', 'Default');
