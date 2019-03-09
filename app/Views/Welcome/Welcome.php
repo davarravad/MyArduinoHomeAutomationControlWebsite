@@ -69,8 +69,6 @@ use Libs\Language;
 									</div>
 								</div>
 							";
-						}
-						echo "</div><hr>";
 						echo "
 							<div class='modal fade' id='GarageDoorModal".$garage->door_id."' tabindex='-1' role='dialog' aria-labelledby='GarageDoorModal".$garage->door_id."Label' aria-hidden='true'>
 							  <div class='modal-dialog' role='document'>
@@ -92,6 +90,8 @@ use Libs\Language;
 							  </div>
 							</div>
 						";
+						}
+						echo "</div><hr>";
 					}
 				?>
 

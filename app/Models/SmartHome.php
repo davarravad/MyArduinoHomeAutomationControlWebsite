@@ -245,8 +245,7 @@ class SmartHome extends Models {
     public function createMAHProfileHouse($house_token){
       $data = $this->db->insert(PREFIX.'hc_house', array('house_token' => $house_token));
       $new_house_id = $this->db->lastInsertId('house_id');
-      $count = count($data);
-      if($count > 0){
+      if($data > 0){
         return $new_house_id;
       }else{
         return false;

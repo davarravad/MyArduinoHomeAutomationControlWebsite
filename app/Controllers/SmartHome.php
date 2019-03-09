@@ -272,16 +272,17 @@ class SmartHome extends Controller
             $relay_title = Request::post('relay_title');
             $relay_alexa_name = Request::post('relay_alexa_name');
             $enable = Request::post('enable');
+			$rsUpdate = 0;
 
             foreach ($relay_server_name as $rsn) {
               $relay_title_new = $relay_title["$rsn"];
               $relay_alexa_name_new = $relay_alexa_name["$rsn"];
               $relay_enable = $enable["$rsn"];
               if($relay_enable != "1"){ $relay_enable = "0"; }
-              $rsUpdate = $SmartHome->updateMAHLights($house_id, $rsn, $relay_title_new, $relay_alexa_name_new, $relay_enable);
+              $rsUpdate = $rsUpdate + $SmartHome->updateMAHLights($house_id, $rsn, $relay_title_new, $relay_alexa_name_new, $relay_enable);
+			  
             }
-            $rsUpdateCount = count($rsUpdate);
-            if($rsUpdateCount > 0){
+            if($rsUpdate > 0){
               // Success Message Display
               SuccessMessages::push("MAH Temp Sensors Settings Updated!", 'MAHLights');
             }else{
@@ -353,8 +354,7 @@ class SmartHome extends Controller
               if($door_enable != "1"){ $door_enable = "0"; }
               $dsUpdate = $SmartHome->updateMAHGarageDoors($house_id, $dsn, $door_title_new, $door_alexa_name_new, $door_enable);
             }
-            $dsUpdateCount = count($dsUpdate);
-            if($dsUpdateCount > 0){
+            if($dsUpdate > 0){
               // Success Message Display
               SuccessMessages::push("MAH Garage Door Settings Updated!", 'MAHGarageDoors');
             }else{

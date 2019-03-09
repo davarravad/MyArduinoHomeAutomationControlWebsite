@@ -190,30 +190,4 @@ class Welcome extends Controller {
         Load::View("Welcome::Welcome", $data, "Members::Member-Stats-Sidebar::Right");
     }
 
-
-    /* Templates Method
-    * Used to load files within the template assets folder
-    */
-
-    public function Templates(){
-        $extRoutes = $this->routes;
-        if(sizeof($extRoutes) == '5'){
-            Assets::loadFile($extRoutes);
-        }else{
-            Error::show(404);
-        }
-    }
-
-    /* Assets Method
-    * Used to load files within the root assets folder
-    */
-    public function assets(){
-        $extRoutes = $this->routes;
-        if(sizeof($extRoutes) == '4' || sizeof($extRoutes) == '5'){
-            Assets::loadFile($extRoutes, 'assets');
-        }else{
-            Error::show(404);
-        }
-    }
-
 }
