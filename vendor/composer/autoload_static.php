@@ -8,12 +8,15 @@ class ComposerStaticInit8892d60cc2d18b9a87bae47243ee530c
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
     );
 
     public static $prefixLengthsPsr4 = array (
         'S' => 
         array (
+            'Symfony\\Polyfill\\Php73\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'Symfony\\Contracts\\' => 18,
             'Symfony\\Component\\Console\\' => 26,
         ),
         'R' => 
@@ -24,6 +27,10 @@ class ComposerStaticInit8892d60cc2d18b9a87bae47243ee530c
         array (
             'Libs\\' => 5,
         ),
+        'D' => 
+        array (
+            'Doctrine\\Common\\Inflector\\' => 26,
+        ),
         'A' => 
         array (
             'App\\' => 4,
@@ -31,9 +38,17 @@ class ComposerStaticInit8892d60cc2d18b9a87bae47243ee530c
     );
 
     public static $prefixDirsPsr4 = array (
+        'Symfony\\Polyfill\\Php73\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-php73',
+        ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
+        ),
+        'Symfony\\Contracts\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/contracts',
         ),
         'Symfony\\Component\\Console\\' => 
         array (
@@ -47,20 +62,18 @@ class ComposerStaticInit8892d60cc2d18b9a87bae47243ee530c
         array (
             0 => __DIR__ . '/../..' . '/app/System/Libraries',
         ),
+        'Doctrine\\Common\\Inflector\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Common/Inflector',
+        ),
         'App\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app',
         ),
     );
 
-    public static $prefixesPsr0 = array (
-        'D' => 
-        array (
-            'Doctrine\\Common\\Inflector\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/doctrine/inflector/lib',
-            ),
-        ),
+    public static $classMap = array (
+        'JsonException' => __DIR__ . '/..' . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
@@ -68,7 +81,7 @@ class ComposerStaticInit8892d60cc2d18b9a87bae47243ee530c
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit8892d60cc2d18b9a87bae47243ee530c::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit8892d60cc2d18b9a87bae47243ee530c::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit8892d60cc2d18b9a87bae47243ee530c::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit8892d60cc2d18b9a87bae47243ee530c::$classMap;
 
         }, null, ClassLoader::class);
     }
